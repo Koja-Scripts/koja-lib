@@ -37,5 +37,5 @@ files {
     'web/build/index.html',
     'web/build/**/*',
     'web/build/**/**/*',
-    'locales/en.json'
+    'locales/**.json'
 }

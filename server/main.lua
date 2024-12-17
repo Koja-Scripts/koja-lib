@@ -22,36 +22,6 @@ RegisterNetEvent("koja:Server:HandleCallback", function(key, payload)
     end
 end)
 
-Koja.Server.GetPlayerBySource = function(source)
-    if Koja.Framework == "esx" then
-        return ESX.GetPlayerFromId(source)
-    elseif Koja.Framework == "qb" then
-        return QBCore.Functions.GetPlayer(source)
-    elseif Koja.Framework == "ox" then
-        return Ox.GetPlayer(source)
-    end
-end
-
-Koja.Server.GetPlayerIdentifier = function(source)
-    if Koja.Framework == "esx" then
-        local xPlayer = ESX.GetPlayerFromId(source)
-        if xPlayer then
-            return xPlayer.identifier
-        end
-    elseif Koja.Framework == "qb" then
-        local xPlayer = QBCore.Functions.GetPlayer(source)
-        if xPlayer then
-            return xPlayer.PlayerData.citizenid
-        end
-    elseif Koja.Framework == "ox" then
-        local player = Ox.GetPlayer(source)
-        if player then
-            return player.identifier
-        end
-    end
-    return nil
-end
-
 Koja.Server.TriggerCallback = function(key, source, payload, cb)
     if not cb then
         cb = function() end
@@ -59,6 +29,27 @@ Koja.Server.TriggerCallback = function(key, source, payload, cb)
     if Koja.Callbacks[key] then
         Koja.Callbacks[key](source, payload, cb)
     end
+end
+
+Koja.Server.GetPlayerBySource = function(source)
+    if Koja.Framework == "esx" then
+        return getPlayer(source)
+    elseif Koja.Framework == "qb" then
+        return getPlayer(source)
+    elseif Koja.Framework == "ox" then
+        return getPlayer(source)
+    end
+end
+
+Koja.Server.GetPlayerIdentifier = function(source)
+    if Koja.Framework == "esx" then
+        return getCharID(source)
+    elseif Koja.Framework == "qb" then
+        return getCharID(source)
+    elseif Koja.Framework == "ox" then
+        return getCharID(source)
+    end
+    return nil
 end
 
 Koja.Server.SendNotify = function(source, type, icon, color, title, desc, time)

@@ -7,28 +7,28 @@ if GetResourceState('es_extended') == 'started' then
         ["bank"] = "bank"
     }
 
-    function getPlayer(src)
+    getPlayer = function(src)
         return ESX.GetPlayerFromId(src)
     end
 
-    function getCharID(src)
+    getCharID = function(src)
         local Player = getPlayer(src)
         return Player.identifier
     end
 
-    function getPlayerJob(src)
+    getPlayerJob = function(src)
         local Player = getPlayer(src)
         return Player.job.name, Player.job.grade
     end
 
-    function getMoney(src, mtype)
+    getMoney = function(src, mtype)
         local Player = getPlayer(src)
         if not Player then return end
         mtype = convertMoney[mtype] or mtype
         return Player.getAccount(mtype).money
     end
 
-    function removeMoney(src, amount, mtype, reason)
+    removeMoney = function(src, amount, mtype, reason)
         local mtype = convertMoney[mtype] or mtype
 
         local Player = getPlayer(src)

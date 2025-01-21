@@ -18,18 +18,3 @@ RegisterNetEvent("koja:Client:HandleCallback", function(key, data)
         Koja.Callbacks[key] = nil
     end
 end)
-
-if Koja.Framework == "esx" then
-    -- Do something
-
-end
-
-if Koja.Framework == "ox" then
-    -- Do something
-    
-end
-
-
-if Koja.Framework == "qb" or Koja.Framework == "qbx" then
-    -- Do something
-end

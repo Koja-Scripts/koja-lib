@@ -1,5 +1,9 @@
+local Framework = nil
+
 if GetResourceState('es_extended') == 'started' then
     
+    Framework = 'esx'
+
     local ESX = exports['es_extended']:getSharedObject()
 
     local convertMoney = {
@@ -46,6 +50,8 @@ if GetResourceState('es_extended') == 'started' then
 
 elseif GetResourceState('ox_core') == 'started' then
 
+    Framework = 'ox'
+
     function getPlayer(id)
         return Ox.GetPlayer(id)
     end
@@ -77,6 +83,8 @@ elseif GetResourceState('ox_core') == 'started' then
     end
 
 elseif GetResourceState('qb-core') == 'started' then
+
+    Framework = 'qb'
 
     local QBCore = exports['qb-core']:GetCoreObject()
 
@@ -112,3 +120,9 @@ elseif GetResourceState('qb-core') == 'started' then
     end
 
 end
+
+GetFramework = function()
+    return Framework
+end
+
+exports('GetFramework', GetFramework)

@@ -19,23 +19,16 @@ shared_scripts {
 }
 
 client_scripts {
-    'client/main.lua',
     'client/functions.lua',
-    'client/events.lua',
-    'client/threads.lua'
+    'client/threads.lua',
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
-    'server/framework.lua'
-    'server/main.lua',
+    'server/framework.lua',
+    'server/functions.lua',
 }
 
-ui_page 'web/build/index.html'
-
 files {
-    'web/build/index.html',
-    'web/build/**/*',
-    'web/build/**/**/*',
-    'locales/**.json'
+	'init.lua',
 }

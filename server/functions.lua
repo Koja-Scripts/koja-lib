@@ -1,4 +1,5 @@
 KOJA = {}
+
 KOJA.Framework = Misc.Utils.GetFramework()
 KOJA.Misc = Misc.Utils
 KOJA.Server = {
@@ -58,6 +59,10 @@ KOJA.Server.SendNotify = function(source, type, icon, color, title, desc, time)
     end
 end
 
+KOJA.Framework = function()
+    return Framework
+end
+
 exports('GetPlayerBySource', KOJA.Server.GetPlayerBySource)
 exports('GetPlayerIdentifier', KOJA.Server.GetPlayerIdentifier)
 exports('SendNotify', KOJA.Server.SendNotify)
@@ -73,4 +78,12 @@ AddEventHandler("onResourceStart", function(resource)
             print(reason)
         end
     end
+end)
+
+AddEventHandler('koja:getSharedObject', function(cb)
+    cb(KOJA)
+end)
+  
+exports('getSharedObject', function()
+    return KOJA
 end)

@@ -18,3 +18,11 @@ RegisterNetEvent("koja:Client:HandleCallback", function(key, data)
         KOJA.Callbacks[key] = nil
     end
 end)
+
+AddEventHandler('koja:getSharedObject', function(cb)
+	cb(KOJA)
+end)
+
+exports('getSharedObject', function()
+	return KOJA
+end)

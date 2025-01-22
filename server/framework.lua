@@ -1,7 +1,9 @@
-local Framework = nil
+Framework = nil
 
 if GetResourceState('es_extended') == 'started' then
     
+    print('[^2KOJA_LIB^7] INITIALIZING FRAMEWORK: ^1ESX^7')
+
     Framework = 'esx'
 
     local ESX = exports['es_extended']:getSharedObject()
@@ -50,6 +52,8 @@ if GetResourceState('es_extended') == 'started' then
 
 elseif GetResourceState('ox_core') == 'started' then
 
+    print('[^2KOJA_LIB^7] INITIALIZING FRAMEWORK: ^1OX^7')
+
     Framework = 'ox'
 
     function getPlayer(id)
@@ -83,6 +87,8 @@ elseif GetResourceState('ox_core') == 'started' then
     end
 
 elseif GetResourceState('qb-core') == 'started' then
+
+    print('[^2KOJA_LIB^7] INITIALIZING FRAMEWORK: ^1QB^7')
 
     Framework = 'qb'
 

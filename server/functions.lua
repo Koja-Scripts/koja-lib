@@ -8,37 +8,16 @@ KOJA.Server = {
         Sync = {}
     }
 }
-KOJA.Callbacks = {}
-
-KOJA.Server.RegisterServerCallback = function(key, func)
-    KOJA.Callbacks[key] = func
-end
-
-RegisterNetEvent("koja:Server:HandleCallback", function(key, payload)
-    local src = source
-    if KOJA.Callbacks[key] then
-        KOJA.Callbacks[key](src, payload, function(cb)
-            TriggerClientEvent("koja:Client:HandleCallback", src, key, cb)
-        end)
-    end
-end)
-
-KOJA.Server.TriggerCallback = function(key, source, payload, cb)
-    if not cb then
-        cb = function() end
-    end
-    if KOJA.Callbacks[key] then
-        KOJA.Callbacks[key](source, payload, cb)
-    end
-end
 
 KOJA.Server.GetPlayerBySource = function(source)
     return getPlayer(source)
 end
+exports('GetPlayerBySource', KOJA.Server.GetPlayerBySource)
 
 KOJA.Server.GetPlayerIdentifier = function(source)
     return getCharID(source)
 end
+exports('GetPlayerIdentifier', KOJA.Server.GetPlayerIdentifier)
 
 KOJA.Server.SendNotify = function(source, type, icon, color, title, desc, time)
     if not time then time = 1500 end
@@ -58,13 +37,6 @@ KOJA.Server.SendNotify = function(source, type, icon, color, title, desc, time)
         Misc.Utils.customNotify(source, icon, color, title, desc, time)
     end
 end
-
-KOJA.Framework = function()
-    return Framework
-end
-
-exports('GetPlayerBySource', KOJA.Server.GetPlayerBySource)
-exports('GetPlayerIdentifier', KOJA.Server.GetPlayerIdentifier)
 exports('SendNotify', KOJA.Server.SendNotify)
 
 AddEventHandler("onResourceStart", function(resource)

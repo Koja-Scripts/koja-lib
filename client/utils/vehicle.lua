@@ -50,16 +50,16 @@ end
 KOJA.Client.GetFuel = function(vehicle)
     if GetResourceState("ox_fuel") == "started" then
         print("Fuel Resource Detected: OX_FUEL")
-        if Entity(self.data.vehicle.entity) then
-            local ent = Entity(self.data.vehicle.entity).state.fuel or 0
-            return Koja.Client.RoundNumber(ent)
+        if Entity(vehicle) then
+            local ent = Entity(vehicle).state.fuel or 0
+            return KOJA.Client.RoundNumber(ent)
         else
             return false
         end
     elseif GetResourceState("LegacyFuel") == "started" then
         print("Fuel Resource Detected: Legacy Fuel")
-        return Koja.Client.RoundNumber(exports["LegacyFuel"]:GetFuel(vehicle))
+        return KOJA.Client.RoundNumber(exports["LegacyFuel"]:GetFuel(vehicle))
     else
-        return Koja.Client.RoundNumber(GetVehicleFuelLevel(vehicle))
+        return KOJA.Client.RoundNumber(GetVehicleFuelLevel(vehicle))
     end
 end

@@ -13,7 +13,7 @@ if GetResourceState('es_extended') == 'started' then
         return ESX.GetPlayerFromId(src)
     end
 
-    getCharID = function(src)
+    getIdentifier = function(src)
         local Player = getPlayer(src)
         return Player.identifier
     end
@@ -58,9 +58,10 @@ elseif GetResourceState('ox_core') == 'started' then
         return Ox.GetPlayer(id)
     end
     
-    function getCharID(src)
+    
+    function getIdentifier(src)
         local player = getPlayer(src)
-        return player.charId
+        return player.identifier
     end
     
     function getPlayerJob(src)
@@ -94,7 +95,7 @@ elseif GetResourceState('qb-core') == 'started' then
         return QBCore.Functions.GetPlayer(src)
     end
 
-    function getCharID(src)
+    function getIdentifier(src)
         local player = getPlayer(src)
         return player.PlayerData.citizenid
     end

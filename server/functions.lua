@@ -15,7 +15,7 @@ end
 exports('GetPlayerBySource', KOJA.Server.GetPlayerBySource)
 
 KOJA.Server.GetPlayerIdentifier = function(source)
-    return getCharID(source)
+    return getIdentifier(source)
 end
 exports('GetPlayerIdentifier', KOJA.Server.GetPlayerIdentifier)
 

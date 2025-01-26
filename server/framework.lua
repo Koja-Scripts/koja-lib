@@ -50,6 +50,10 @@ elseif GetResourceState('ox_core') == 'started' then
 
     print('[^2KOJA_LIB^7] INITIALIZING FRAMEWORK: ^1OX^7')
 
+    function GetPlayers()
+        return Ox.GetPlayers()
+    end
+
     function getPlayer(id)
         return Ox.GetPlayer(id)
     end

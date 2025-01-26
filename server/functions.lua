@@ -39,6 +39,10 @@ KOJA.Server.SendNotify = function(source, type, icon, color, title, desc, time)
 end
 exports('SendNotify', KOJA.Server.SendNotify)
 
+KOJA.Server.GetPlayers = function()
+    return GetPlayers()
+end
+
 AddEventHandler("onResourceStart", function(resource)
     local _source = source
     if resource == GetCurrentResourceName() then

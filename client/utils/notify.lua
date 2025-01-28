@@ -5,7 +5,7 @@ KOJA.Client.SendNotify = function(data)
         QBCore.Functions.Notify(data.desc, "success")
     elseif KOJA.Framework == 'ox' then
         lib.notify({
-            title = 'Message',
+            title = data.title,
             description = data.desc,
             type = 'success'
         })

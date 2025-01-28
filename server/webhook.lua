@@ -1,0 +1,3 @@
+KOJA.Server.Webhooks = {
+    ['cardealer'] = ''
+}

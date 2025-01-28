@@ -19,7 +19,7 @@ Misc.Utils.GetFramework = function()
             end
         end
     end
-    return nil
+    return 'custom'
 end
 
 Misc.Utils.splitId = function(str)

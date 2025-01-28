@@ -9,5 +9,7 @@ KOJA.Client.SendNotify = function(data)
             description = data.desc,
             type = 'success'
         })
+    elseif KOJA.Framework == 'custom' then
+        -- Custom Function to send notify
     end
 end

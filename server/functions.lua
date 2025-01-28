@@ -9,16 +9,27 @@ KOJA.Server = {
     }
 }
 
+---@param source number # Player ID
+---@return table # Player object based on the current framework
 KOJA.Server.GetPlayerBySource = function(source)
     return getPlayer(source)
 end
 exports('GetPlayerBySource', KOJA.Server.GetPlayerBySource)
 
+---@param source number # Player ID
+---@return string # Character identifier (charID) based on the current framework
 KOJA.Server.GetPlayerIdentifier = function(source)
     return getIdentifier(source)
 end
 exports('GetPlayerIdentifier', KOJA.Server.GetPlayerIdentifier)
 
+---@param source number # Player ID
+---@param type string # Notification type (e.g., 'success', 'error')
+---@param icon string # Notification icon (if using customNotify)
+---@param color string # Notification color (if using customNotify)
+---@param title string # Notification title
+---@param desc string # Notification description
+---@param time number # Duration of the notification (in ms)
 KOJA.Server.SendNotify = function(source, type, icon, color, title, desc, time)
     if not time then time = 1500 end
     if KOJA.Notify == "qb" then

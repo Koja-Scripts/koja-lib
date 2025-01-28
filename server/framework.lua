@@ -9,6 +9,10 @@ if GetResourceState('es_extended') == 'started' then
         ["bank"] = "bank"
     }
 
+    GetPlayers = function()
+        return ESX.GetPlayers()
+    end
+
     getPlayer = function(src)
         return ESX.GetPlayerFromId(src)
     end

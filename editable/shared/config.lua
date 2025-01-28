@@ -8,3 +8,5 @@ KOJA.Debug = true -- Console logs
 -- Notifications systems
 -- "esx", "qb", "ox"
 KOJA.Notify = "ox"
+
+KOJA.CustomFramework = false

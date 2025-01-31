@@ -113,6 +113,10 @@ if not KOJA.CustomFramework then
 
         local QBCore = exports['qb-core']:GetCoreObject()
 
+        getPlayers = function()
+            return QBCore.Functions.GetPlayers()
+        end
+
         getPlayer = function(src)
             return QBCore.Functions.GetPlayer(src)
         end

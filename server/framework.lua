@@ -52,30 +52,41 @@ if not KOJA.CustomFramework then
             return true
         end
 
+        addInventoryItem = function(src, name, count)
+
+            local Player = getPlayer(src)
+            if not Player then
+                return false
+            end
+
+            Player.addInventoryItem(name, count)
+
+            return true
+        end
+
     elseif GetResourceState('ox_core') == 'started' then
 
         print('[^2KOJA_LIB^7] INITIALIZING FRAMEWORK: ^1OX^7')
 
-        function GetPlayers()
+        GetPlayers = function()
             return Ox.GetPlayers()
         end
 
-        function getPlayer(id)
+        getPlayer = function(id)
             return Ox.GetPlayer(id)
         end
         
-        
-        function getIdentifier(src)
+        getIdentifier = function(src)
             local player = getPlayer(src)
             return player.identifier
         end
         
-        function getPlayerJob(src)
+        getPlayerJob = function(src)
             local player = getPlayer(src)
             return player.getGroup()
         end
         
-        function getMoney(src, mtype)
+        getMoney = function(src, mtype)
             if mtype == 'cash' then
                 return exports.ox_inventory:GetItemCount(src, 'money')
             else
@@ -83,12 +94,17 @@ if not KOJA.CustomFramework then
             end
         end
         
-        function removeMoney(src, amount, mtype, reason)
+        removeMoney = function(src, amount, mtype, reason)
             if mtype == 'cash' then
                 return exports.ox_inventory:RemoveItem(src, 'money', amount)
             else
                 return
             end
+        end
+
+        addInventoryItem = function(src, name, count)
+            exports.ox_inventory:AddItem(src, name, count)
+            return true
         end
 
     elseif GetResourceState('qb-core') == 'started' then
@@ -97,27 +113,27 @@ if not KOJA.CustomFramework then
 
         local QBCore = exports['qb-core']:GetCoreObject()
 
-        function getPlayer(src)
+        getPlayer = function(src)
             return QBCore.Functions.GetPlayer(src)
         end
 
-        function getIdentifier(src)
+        getIdentifier = function(src)
             local player = getPlayer(src)
             return player.PlayerData.citizenid
         end
 
-        function getPlayerJob(src)
+        getPlayerJob = function(src)
             local player = getPlayer(src)
             return player.PlayerData.job.name, player.PlayerData.job.grade.level
         end
 
-        function getMoney(src, mtype)
+        getMoney = function(src, mtype)
             local player = getPlayer(src)
             if not player then return end
             return player.PlayerData.money[mtype]
         end
 
-        function removeMoney(src, amount, mtype, reason)
+        removeMoney = function(src, amount, mtype, reason)
             local player = getPlayer(src)
             if not player then return end
 
@@ -126,6 +142,11 @@ if not KOJA.CustomFramework then
             end
 
             return player.Functions.RemoveMoney(mtype, amount, reason or "unknown")
+        end
+
+        addInventoryItem = function(src, name, count)
+            exports.ox_inventory:AddItem(src, name, count)
+            return true
         end
 
     end

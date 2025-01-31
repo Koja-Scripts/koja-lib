@@ -1,4 +1,4 @@
-KOJA.Server.Print = function(level, debug, ...)
+KOJA.Server.Print = function(level, debug, args)
     local printLevel = {
         success = 1,
         error = 2,
@@ -26,8 +26,8 @@ KOJA.Server.Print = function(level, debug, ...)
         level = 'info'
     end
 
-    if KOJA.Debug or not debug then
-        local args = { ... }
+    if debug then
+        local args = { args }
 
         for i = 1, #args do
             local arg = args[i]

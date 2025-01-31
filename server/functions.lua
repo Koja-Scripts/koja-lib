@@ -10,20 +10,6 @@ KOJA.Server = {
 }
 
 ---@param source number # Player ID
----@return table # Player object based on the current framework
-KOJA.Server.GetPlayerBySource = function(source)
-    return getPlayer(source)
-end
-exports('GetPlayerBySource', KOJA.Server.GetPlayerBySource)
-
----@param source number # Player ID
----@return string # Character identifier (charID) based on the current framework
-KOJA.Server.GetPlayerIdentifier = function(source)
-    return getIdentifier(source)
-end
-exports('GetPlayerIdentifier', KOJA.Server.GetPlayerIdentifier)
-
----@param source number # Player ID
 ---@param type string # Notification type (e.g., 'success', 'error')
 ---@param icon string # Notification icon (if using customNotify)
 ---@param color string # Notification color (if using customNotify)

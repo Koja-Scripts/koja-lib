@@ -11,17 +11,17 @@ KOJA.Client.GetPlayerData = function()
 end
 
 KOJA.Client.GetPlayerJob = function()
-    if Koja.Framework == "esx" then
+    if KOJA.Framework == "esx" then
         local ESX = exports['es_extended']:getSharedObject()
         return ESX.PlayerData.job.name
-    elseif Koja.Framework == "qb" or Koja.Framework == "qbx" then
+    elseif KOJA.Framework == "qb" or KOJA.Framework == "qbx" then
         local QBCore = exports['qb-core']:GetCoreObject()
         local PlayerData = QBCore.Functions.GetPlayerData()
         return PlayerData.job.name
-    elseif Koja.Framework == "ox" then
+    elseif KOJA.Framework == "ox" then
         local player = Ox.GetPlayer()
         return player.get('job')
-    elseif Koja.Framework == 'custom' then
+    elseif KOJA.Framework == 'custom' then
         return --
     end
 end

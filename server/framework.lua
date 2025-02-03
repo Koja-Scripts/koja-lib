@@ -1,8 +1,6 @@
-if not KOJA.CustomFramework then
+if not Config.CustomFramework then
 
-    if GetResourceState('es_extended') == 'started' then
-        
-        print('[^2KOJA_LIB^7] INITIALIZING FRAMEWORK: ^1ESX^7')
+    if GetResourceState('es_extended') == 'started' then     
 
         local ESX = exports['es_extended']:getSharedObject()
 
@@ -109,8 +107,6 @@ if not KOJA.CustomFramework then
 
     elseif GetResourceState('qb-core') == 'started' then
 
-        print('[^2KOJA_LIB^7] INITIALIZING FRAMEWORK: ^1QB^7')
-
         local QBCore = exports['qb-core']:GetCoreObject()
 
         getPlayers = function()
@@ -155,8 +151,6 @@ if not KOJA.CustomFramework then
 
     end
 else
-
-    print('[^2KOJA_LIB^7] INITIALIZING FRAMEWORK: ^1CUSTOM^7')
 
     GetPlayers = function()
         return --

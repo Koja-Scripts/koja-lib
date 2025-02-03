@@ -1,3 +1,6 @@
+---@param level string # Log level (success, error, warn, info, debug)
+---@param debug boolean # Whether to print debug information
+---@param args any # Arguments to print
 KOJA.Server.Print = function(level, debug, args)
     local printLevel = {
         success = 1,

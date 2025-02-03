@@ -24,7 +24,7 @@ client_scripts {
     'client/functions.lua',
     'client/threads.lua',
     'client/callbacks.lua',
-    'client/utils/*.lua'
+    'client/modules/*.lua'
 }
 
 server_scripts {

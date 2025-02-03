@@ -1,12 +1,12 @@
-KOJA = {}
+Config = {}
 
-KOJA.Locale = 'pl'
+Config.Locale = 'pl'
 
 -- Boolean to receive system logs.
-KOJA.Debug = true -- Console logs
+Config.Debug = true -- Console logs
 
 -- Notifications systems
 -- "esx", "qb", "ox"
-KOJA.Notify = "ox"
+Config.Notify = "ox"
 
-KOJA.CustomFramework = false
+Config.CustomFramework = false

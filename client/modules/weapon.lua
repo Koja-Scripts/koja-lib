@@ -1,3 +1,5 @@
+---@param PlayerPed number # Player Ped ID
+---@return table|nil # Weapon information table or nil
 KOJA.Client.getCurrentWeaponInfo = function(PlayerPed)
     local _, weaponHash = GetCurrentPedWeapon(PlayerPed, true)
 

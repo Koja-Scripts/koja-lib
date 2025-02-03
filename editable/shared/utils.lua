@@ -47,10 +47,10 @@ Misc.Utils.extractDiscordIdentifier = function(source)
     end
 end
 
-Misc.Utils.customNotify = function(source, type, icon, color, title, desc, time)
-    if source and source > 0 then -- server
-
-    else -- client
-
+Misc.Utils.customNotify = function(data)
+    if data.source and data.source > 0 then
+        -- Server side
+    else
+        -- Client side
     end
 end

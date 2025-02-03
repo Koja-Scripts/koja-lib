@@ -1,4 +1,7 @@
-KOJA.Client.Print = function(level, debug, ...)
+---@param level string # Log level (success, error, warn, info, debug)
+---@param debug boolean # Whether to print debug information
+---@param args any # Arguments to print
+KOJA.Client.Print = function(level, debug, args)
     local printLevel = {
         success = 1,
         error = 2,
@@ -26,8 +29,8 @@ KOJA.Client.Print = function(level, debug, ...)
         level = 'info'
     end
 
-    if KOJA.Debug or not debug then
-        local args = { ... }
+    if debug then
+        local args = { args }
 
         for i = 1, #args do
             local arg = args[i]

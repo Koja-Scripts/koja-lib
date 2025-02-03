@@ -7,15 +7,13 @@ webhook = function(embed, hook)
 end
 
 KOJA.Server.LogMessage = function(data, hook)
-    local xPlayer = data.player
-    local vehicle = data.vehicle
-    local logMessage = string.format("**Player:** %s\n**Purchased Vehicle**\n**Vehicle Model:** %s\n**License Plate:** %s\n**Price:** %s", GetPlayerName(xPlayer.source), vehicle.name, vehicle.plate, vehicle.price)
+    local logMessage = data.message
     local embed = {
-        title = "Vehicle Purchase",
+        title = data.title,
         description = logMessage,
         color = 65280,
         footer = {
-            text = "Vehicle System",
+            text = data.footertext,
         },
     }
     webhook(embed, hook)

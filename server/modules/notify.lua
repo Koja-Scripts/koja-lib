@@ -7,9 +7,9 @@
 ---@param title string # Notification title
 ---@param desc string # Notification description
 ---@param time number # Duration of the notification (in ms)
-KOJA.Client.SendNotify = function(data)
+KOJA.Server.SendNotify = function(data)
     if Config.Notify == "esx" then
-        KOJA.Framework == "esx" then
+        if KOJA.Framework == "esx" then
             ESX.ShowNotification(data.desc)
         end
     elseif Config.Notify == "qb" then

@@ -8,7 +8,7 @@ end
 
 ---@return string # Player job
 KOJA.Client.GetPlayerJob = function()
-    local framework = KOJA.Framework:lower()
+    local framework = KOJA.Framework
     if framework == "esx" then return exports['es_extended']:getSharedObject().PlayerData.job.name
     elseif framework == "qb" or framework == "qbx" then return exports['qb-core']:GetCoreObject().Functions.GetPlayerData().job.name
     elseif framework == "ox" then return Ox.GetPlayer().get('job')

@@ -64,8 +64,6 @@ if not Config.CustomFramework then
 
     elseif GetResourceState('ox_core') == 'started' then
 
-        print('[^2KOJA_LIB^7] INITIALIZING FRAMEWORK: ^1OX^7')
-
         GetPlayers = function()
             return Ox.GetPlayers()
         end

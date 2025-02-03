@@ -6,7 +6,7 @@ Citizen.CreateThread(function()
     if currentVersion then
         currentVersion = currentVersion:match('%d+%.%d+%.%d+')
     end
-    print(currentVersion)
+
     if not currentVersion then 
         return print(("^1[ERROR] Unable to determine the current version of '%s' ^0"):format(resourceName)) 
     end

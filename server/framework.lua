@@ -19,7 +19,11 @@ if not Config.CustomFramework then
 
         getIdentifier = function(src)
             local Player = getPlayer(src)
-            return Player.identifier
+            if Player then
+                return Player.identifier
+            else
+                return nil
+            end
         end
 
         getPlayerJob = function(src)
@@ -73,8 +77,12 @@ if not Config.CustomFramework then
         end
         
         getIdentifier = function(src)
-            local player = getPlayer(src)
-            return player.identifier
+            local Player = getPlayer(src)
+            if Player then
+                return Player.identifier
+            else
+                return nil
+            end
         end
         
         getPlayerJob = function(src)
@@ -116,8 +124,12 @@ if not Config.CustomFramework then
         end
 
         getIdentifier = function(src)
-            local player = getPlayer(src)
-            return player.PlayerData.citizenid
+            local Player = getPlayer(src)
+            if Player then
+                return Player.PlayerData.citizenid
+            else
+                return nil
+            end
         end
 
         getPlayerJob = function(src)
@@ -143,7 +155,7 @@ if not Config.CustomFramework then
         end
 
         addInventoryItem = function(src, name, count)
-            exports.ox_inventory:AddItem(src, name, count)
+            exports['qb-inventory']:AddItem(src, name, count, false, false, 'Add inventory item')
             return true
         end
 

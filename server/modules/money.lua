@@ -13,3 +13,7 @@ end
 KOJA.Server.removeMoney = function(source, amount, mtype, reason)
     return removeMoney(source, amount, mtype, reason)
 end
+
+KojaLib.Server.RegisterServerCallback("KOJA_LIB:GetMoney", function(source, data, cb)
+    cb(getMoney(source, data))
+end)

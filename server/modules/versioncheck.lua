@@ -33,8 +33,7 @@ Citizen.CreateThread(function()
 
                 if current ~= minimum then
                     if current < minimum then
-                        return print(("^3🚀 Update available for %s! (Current version: %s) \r\n📥 Download the latest version: %s^0")
-                            :format(resourceName, currentVersion, response.html_url))
+                        return print(("^3🚀 Update available for %s! (Current version: %s) \r\n📥 Download the latest version: %s^0"):format(resourceName, currentVersion, response.html_url))
                     else 
                         break 
                     end

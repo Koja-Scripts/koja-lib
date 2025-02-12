@@ -15,7 +15,6 @@ games {
 shared_scripts {
     '@ox_core/lib/init.lua',  -- ❗ Uncomment if you're using ox core
     -- "@es_extended/imports.lua", -- ❗ Uncomment if you're using esx
-    --'@ox_lib/init.lua', -- ❗ Comment if you're using ox core
     'editable/shared/config.lua',
     'editable/shared/utils.lua',
 }
@@ -24,7 +23,9 @@ client_scripts {
     'client/functions.lua',
     'client/threads.lua',
     'client/callbacks.lua',
-    'client/modules/*.lua'
+    'client/modules/*.lua',
+    'client/storage/init.lua',
+    'client/storage/storage.lua'
 }
 
 server_scripts {

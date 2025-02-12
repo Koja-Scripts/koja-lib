@@ -27,5 +27,5 @@ KOJA.Client.GetPlayerJob = function()
 end
 
 KOJA.Client.IsDead = function()
-    IsEntityDead(cache.ped)
+    IsEntityDead(KOJA.storage.ped)
 end

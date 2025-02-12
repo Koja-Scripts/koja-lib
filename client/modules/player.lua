@@ -23,5 +23,5 @@ end
 
 ---@return boolean # Whether the player is dead
 KOJA.Client.IsDead = function()
-    return IsEntityDead(cache.ped)
+    return IsEntityDead(KOJA.storage.ped)
 end

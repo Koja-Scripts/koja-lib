@@ -59,7 +59,6 @@ storage.onUpdate = function(key, callback)
     end
 end
 
-
 KOJA.storage = storage
 KOJA.onUpdate = storage.onUpdate
 

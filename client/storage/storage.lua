@@ -3,9 +3,11 @@ storage.serverId = GetPlayerServerId(storage.playerId)
 
 function storage:set(key, value)
     if value ~= self[key] then
+        if Config.Debug then
+            KOJA.Client.Print(5, true, "[KOJA_LIB] ZMIANA: ".. key .." STARA: ".. tostring(self[key]) .." NOWA: ".. tostring(value))
+        end
         TriggerEvent(('koja_lib:update:%s'):format(key), value, self[key])
         self[key] = value
-        return true
     end
 end
 
@@ -15,31 +17,37 @@ local GetVehicleMaxNumberOfPassengers = GetVehicleMaxNumberOfPassengers
 local GetCurrentPedWeapon = GetCurrentPedWeapon
 
 CreateThread(function()
-    while true do
-        local ped = PlayerPedId()
-        storage:set('ped', ped)
+	while true do
+		local ped = PlayerPedId()
+		storage:set('ped', ped)
 
-        local vehicle = GetVehiclePedIsIn(ped, false)
+		local vehicle = GetVehiclePedIsIn(ped, false)
 
-        if vehicle > 0 then
-            storage:set('vehicle', vehicle)
-
-            if not storage.seat or GetPedInVehicleSeat(vehicle, storage.seat) ~= ped then
-                for i = -1, GetVehicleMaxNumberOfPassengers(vehicle) - 1 do
-                    if GetPedInVehicleSeat(vehicle, i) == ped then
-                        storage:set('seat', i)
-                        break
-                    end
-                end
+		if vehicle > 0 and vehicle then
+			if vehicle ~= storage.vehicle then
+				storage:set('seat', false)
+			end
+            if vehicle ~= storage.vehicle then
+			    storage:set('vehicle', vehicle)
             end
-        else
-            storage:set('vehicle', false)
-            storage:set('seat', false)
-        end
+            
+			if not storage.seat or GetPedInVehicleSeat(vehicle, storage.seat) ~= ped then
+				for i = -1, GetVehicleMaxNumberOfPassengers(vehicle) - 1 do
+					if GetPedInVehicleSeat(vehicle, i) == ped then
+						storage:set('seat', i)
+						break
+					end
+				end
+			end
+		else
+			storage:set('vehicle', false)
+			storage:set('seat', false)
+		end
 
-        local hasWeapon, currentWeapon = GetCurrentPedWeapon(ped, true)
-        storage:set('weapon', hasWeapon and currentWeapon or false)
+		local hasWeapon, currentWeapon = GetCurrentPedWeapon(ped, true)
 
-        Wait(100)
-    end
+		storage:set('weapon', hasWeapon and currentWeapon or false)
+
+		Wait(100)
+	end
 end)

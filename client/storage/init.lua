@@ -9,26 +9,10 @@ storage = setmetatable({
         storageEvents[key] = {}
 
         AddEventHandler(('koja_lib:update:%s'):format(key), function(value)
-
             local oldValue = self[key]
-            local events = storageEvents[key]
-        
-            if events and type(events) == "table" and #events > 0 then
-                for i = 1, #events do
-                    if type(events[i]) == "function" then
-                        Citizen.CreateThread(function()
-                            local success, err = pcall(events[i], value, oldValue)
-                            if not success then
-                                print("^1[KOJA_LIB] error in metatable callback onUpdate:", err, "^0")
-                            end
-                        end)
-                    end
-                end
-            end
-        
+            TriggerEvent("koja_lib:callback_triggered", key, value, oldValue)
             self[key] = value
         end)
-        
 
         return rawset(self, key, storageData[key] or false)[key]
     end,
@@ -49,17 +33,18 @@ storage = setmetatable({
     end
 })
 
-storage.onUpdate = function(key, callback)
-    if not storageEvents[key] then
-        getmetatable(storage).__index(storage, key)
+RegisterNetEvent("koja_lib:callback_triggered")
+AddEventHandler("koja_lib:callback_triggered", function(key, value, oldValue)
+    for i, callback in ipairs(storageEvents[key]) do
+        CreateThread(function()
+            if Config.Debug then
+                KOJA.Client.Print(5, true, "[KOJA_LIB] WYWOŁUJĘ CALLBACK ["..i.."] z eventu dla '" .. key .. "'")
+            end
+            callback(value, oldValue)
+        end)
     end
-
-    if type(callback) == "function" then
-        table.insert(storageEvents[key], callback)
-    end
-end
+end)
 
 KOJA.storage = storage
-KOJA.onUpdate = storage.onUpdate
 
 return storage

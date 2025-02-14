@@ -26,37 +26,37 @@ function keybind_meta:disable(state)
     self.isDisabled = state
 end
 
-function KOJA.registerKeyBind(name, description, key, onPress, onRelease)
+function KOJA.registerKeyBind(data)
     local bind = {
-        name = name,
-        description = description,
-        hash = joaat('+' .. name) | 0x80000000,
+        name = data.name,
+        description = data.description,
+        hash = joaat('+' .. data.name) | 0x80000000,
         isPressed = false,
         isDisabled = false,
-        key = key,
-        onPress = onPress,
-        onRelease = onRelease
+        key = data.key,
+        onPress = data.onPress,
+        onRelease = data.onRelease
     }
 
-    KeyBinds[name] = setmetatable(bind, keybind_meta)
+    KeyBinds[data.name] = setmetatable(bind, keybind_meta)
 
-    RegisterCommand('+' .. name, function()
+    RegisterCommand('+' .. data.name, function()
         if bind.isDisabled or IsPauseMenuActive() then return end
         bind.isPressed = true
         if bind.onPress then bind.onPress() end
     end)
 
-    RegisterCommand('-' .. name, function()
+    RegisterCommand('-' .. data.name, function()
         if bind.isDisabled or IsPauseMenuActive() then return end
         bind.isPressed = false
         if bind.onRelease then bind.onRelease() end
     end)
 
-    RegisterKeyMapping('+' .. name, description, 'keyboard', key)
+    RegisterKeyMapping('+' .. data.name, data.description, 'keyboard', data.key)
 
     SetTimeout(500, function()
-        TriggerEvent('chat:removeSuggestion', ('/+%s'):format(name))
-        TriggerEvent('chat:removeSuggestion', ('/-%s'):format(name))
+        TriggerEvent('chat:removeSuggestion', ('/+%s'):format(data.name))
+        TriggerEvent('chat:removeSuggestion', ('/-%s'):format(data.name))
     end)
 
     return bind

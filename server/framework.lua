@@ -94,7 +94,7 @@ if not Config.CustomFramework then
             if mtype == 'cash' then
                 return exports.ox_inventory:GetItemCount(src, 'money')
             else
-                return
+                return exports.ox_inventory:GetItemCount(src, 'money')
             end
         end
         

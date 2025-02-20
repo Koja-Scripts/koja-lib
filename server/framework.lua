@@ -37,7 +37,6 @@ if not Config.CustomFramework then
             mtype = convertMoney[mtype] or mtype
             local account = Player.getAccount(mtype)
             if not account then print('[ESX] Account missed, add ESX accounts for the script to work properly') end
-            print(json.encode(Player.getAccount(mtype)))
             return Player.getAccount(mtype).money
         end
 

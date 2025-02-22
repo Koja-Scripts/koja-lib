@@ -68,6 +68,18 @@ if not Config.CustomFramework then
             return true
         end
 
+        removeInventoryItem = function(src, name, count)
+
+            local Player = getPlayer(src)
+            if not Player then
+                return false
+            end
+
+            Player.removeInventoryItem(name, count)
+
+            return true
+        end
+
     elseif GetResourceState('ox_core') == 'started' then
 
         GetPlayers = function()
@@ -110,6 +122,11 @@ if not Config.CustomFramework then
 
         addInventoryItem = function(src, name, count)
             exports.ox_inventory:AddItem(src, name, count)
+            return true
+        end
+
+        removeInventoryItem = function(src, name, count)
+            exports.ox_inventory:RemoveItem(src, name, count)
             return true
         end
 
@@ -158,6 +175,11 @@ if not Config.CustomFramework then
 
         addInventoryItem = function(src, name, count)
             exports['qb-inventory']:AddItem(src, name, count, false, false, 'Add inventory item')
+            return true
+        end
+
+        removeInventoryItem = function(src, name, count)
+            exports['qb-inventory']:RemoveItem(src, name, count, false, 'Remove inventory item')
             return true
         end
 

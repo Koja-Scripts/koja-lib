@@ -24,6 +24,7 @@ client_scripts {
     'client/threads.lua',
     'client/callbacks.lua',
     'client/modules/*.lua',
+    'client/utils/*.lua',
     'client/storage/init.lua',
     'client/storage/storage.lua'
 }

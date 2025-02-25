@@ -38,7 +38,7 @@ AddEventHandler("koja_lib:callback_triggered", function(key, value, oldValue)
     for i, callback in ipairs(storageEvents[key]) do
         CreateThread(function()
             if Config.Debug then
-                KOJA.Client.Print(5, true, "[KOJA_LIB] WYWOŁUJĘ CALLBACK ["..i.."] z eventu dla '" .. key .. "'")
+                KOJA.Client.Print(5, true, "[KOJA_LIB] EXECUTING CALLBACK ["..i.."] FROM EVENT FOR '" .. key .. "'")
             end
             callback(value, oldValue)
         end)

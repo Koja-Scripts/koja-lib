@@ -6,6 +6,15 @@ KOJA.Server.getMoney = function(source, mtype)
 end
 
 ---@param source number # Player ID
+---@param amount number # Amount to add
+---@param mtype string # Money type
+---@param reason string # Reason for add
+---@return boolean # Whether the add was successful
+KOJA.Server.addMoney = function(source, amount, mtype, reason)
+    return addMoney(source, amount, mtype, reason)
+end
+
+---@param source number # Player ID
 ---@param amount number # Amount to remove
 ---@param mtype string # Money type
 ---@param reason string # Reason for removal

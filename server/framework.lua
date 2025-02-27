@@ -40,6 +40,18 @@ if not Config.CustomFramework then
             return Player.getAccount(mtype).money
         end
 
+        addMoney = function(src, amount, mtype, reason)
+            local mtype = convertMoney[mtype] or mtype
+
+            local Player = getPlayer(src)
+            if not Player then
+                return false
+            end
+
+            Player.addAccountMoney(mtype, amount, reason)
+            return true
+        end
+
         removeMoney = function(src, amount, mtype, reason)
             local mtype = convertMoney[mtype] or mtype
 
@@ -111,6 +123,14 @@ if not Config.CustomFramework then
                 return exports.ox_inventory:GetItemCount(src, 'money')
             end
         end
+
+        addMoney = function(src, amount, mtype, reason)
+            if mtype == 'cash' then
+                return exports.ox_inventory:AddItem(src, 'money', amount)
+            else
+                return
+            end
+        end
         
         removeMoney = function(src, amount, mtype, reason)
             if mtype == 'cash' then
@@ -160,6 +180,13 @@ if not Config.CustomFramework then
             local player = getPlayer(src)
             if not player then return end
             return player.PlayerData.money[mtype]
+        end
+
+        addMoney = function(src, amount, mtype, reason)
+            local player = getPlayer(src)
+            if not player then return end
+
+            return player.Functions.AddMoney(mtype, amount, reason or "unknown")
         end
 
         removeMoney = function(src, amount, mtype, reason)

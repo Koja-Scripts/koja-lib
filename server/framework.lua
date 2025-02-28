@@ -124,7 +124,7 @@ if not Config.CustomFramework then
             end
         end
 
-        addMoney = function(src, amount, mtype, reason)
+        addMoney = function(src, amount, mtype)
             if mtype == 'cash' then
                 return exports.ox_inventory:AddItem(src, 'money', amount)
             else
@@ -132,7 +132,7 @@ if not Config.CustomFramework then
             end
         end
         
-        removeMoney = function(src, amount, mtype, reason)
+        removeMoney = function(src, amount, mtype)
             if mtype == 'cash' then
                 return exports.ox_inventory:RemoveItem(src, 'money', amount)
             else

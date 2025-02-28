@@ -10,7 +10,7 @@
 KOJA.Server.SendNotify = function(data)
     if Config.Notify == "esx" then
         if KOJA.Framework == "esx" then
-            ESX.ShowNotification(data.desc)
+            TriggerClientEvent("esx:ShowNotification", data.source, data.desc)
         end
     elseif Config.Notify == "qb" then
         if KOJA.Framework == "qb" then

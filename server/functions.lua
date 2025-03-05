@@ -16,8 +16,7 @@ AddEventHandler("onResourceStart", function(resource)
         local realname = 'KOJA_LIB'
         if resourceName ~= realname then
             StopResource(GetCurrentResourceName())
-            local reason = 'CHANGE THE NAME OF THE SCRIPT TO: '..realname..'!'
-            print(reason)
+            KOJA.Client.Print(5, true, '[KOJA_LIB] THE NAME OF THE SCRIPT TO: '..realname..'!')
         end
     end
 end)

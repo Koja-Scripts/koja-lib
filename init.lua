@@ -1,2 +1,2 @@
-KOJA = exports['KOJA_LIB']:getSharedObject()
+KOJA = exports['koja-lib']:getSharedObject()
 

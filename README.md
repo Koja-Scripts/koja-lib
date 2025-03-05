@@ -1,6 +1,6 @@
-# KOJA_LIB
+# koja-lib
 
-> **KOJA_LIB** is a library developed by our team to simplify resource creation, provide our clients with easy access to editing functions for their custom frameworks, and empower them to build their own resources effortlessly.
+> **koja-lib** is a library developed by our team to simplify resource creation, provide our clients with easy access to editing functions for their custom frameworks, and empower them to build their own resources effortlessly.
 
 **Note:**  
 This library is in **very early development**. We have big plans ahead, including a full-featured UI and many additional tools. All updates and announcements will be shared on our [Discord Server](https://discord.gg/kojascripts).

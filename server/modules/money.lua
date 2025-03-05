@@ -23,7 +23,7 @@ KOJA.Server.removeMoney = function(source, amount, mtype, reason)
     return removeMoney(source, amount, mtype, reason)
 end
 
-KOJA.Server.RegisterServerCallback("KOJA_LIB:GetMoney", function(source, data, cb)
+KOJA.Server.RegisterServerCallback("koja-lib:GetMoney", function(source, data, cb)
     local money = getMoney(source, 'cash')
     local bank = getMoney(source, 'bank')
     cb({ money = money, bank = bank })

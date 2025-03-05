@@ -4,9 +4,9 @@ storage.serverId = GetPlayerServerId(storage.playerId)
 function storage:set(key, value)
     if value ~= self[key] then
         if Config.Debug then
-            KOJA.Client.Print(5, true, "[KOJA_LIB] CHANGE KEY: ".. key .." OLD KEY: ".. tostring(self[key]) .." NEW VALUE: ".. tostring(value))
+            KOJA.Client.Print(5, true, "[koja-lib] CHANGE KEY: ".. key .." OLD KEY: ".. tostring(self[key]) .." NEW VALUE: ".. tostring(value))
         end
-        TriggerEvent(('koja_lib:update:%s'):format(key), value, self[key])
+        TriggerEvent(('koja-lib:update:%s'):format(key), value, self[key])
         self[key] = value
     end
 end

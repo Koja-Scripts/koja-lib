@@ -1,5 +1,5 @@
 Citizen.CreateThread(function()
-    local updatePath = "Koja-Scripts/KOJA_LIB"
+    local updatePath = "Koja-Scripts/koja-lib"
     local resourceName = GetInvokingResource() or GetCurrentResourceName()
     local currentVersion = GetResourceMetadata(resourceName, 'version', 0)
     

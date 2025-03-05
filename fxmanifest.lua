@@ -1,6 +1,6 @@
 fx_version 'cerulean'
 
-name 'KOJA_LIB'
+name 'koja-lib'
 author 'Koja Scripts'
 version '1.0.0'
 description 'Library to scripts'

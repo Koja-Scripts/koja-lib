@@ -18,7 +18,8 @@ KOJA.Server.SendNotify = function(data)
         end
     elseif Config.Notify == 'ox' then
         if KOJA.Framework == 'ox' then
-            TriggerClientEvent('ox_lib:notify', data.source, {title = data.title, description = data.desc, type = data.type})
+            local duration = data.time or 5000
+            TriggerClientEvent('ox_lib:notify', data.source, {title = data.title, description = data.desc, type = data.type, duration = duration})
         end
     elseif KOJA.Framework == 'custom' then
         Misc.Utils.customNotify(data)

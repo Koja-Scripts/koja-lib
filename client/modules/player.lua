@@ -21,6 +21,18 @@ KOJA.Client.GetPlayerJob = function()
     end
 end
 
+---@return string # Player job label
+KOJA.Client.GetPlayerJobLabel = function()
+    local framework = KOJA.Framework
+    if framework == "esx" then 
+        return exports['es_extended']:getSharedObject().PlayerData.job.label
+    elseif framework == "qb" or framework == "qbx" then 
+        return exports['qb-core']:GetCoreObject().Functions.GetPlayerData().job.label
+    elseif framework == "ox" then
+         return Ox.GetPlayer().get('job')
+    end
+end
+
 ---@return boolean # Whether the player is dead
 KOJA.Client.IsDead = function()
     return IsEntityDead(KOJA.storage.ped)

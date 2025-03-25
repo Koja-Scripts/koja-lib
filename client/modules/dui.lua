@@ -1,103 +1,129 @@
 ---@class DuiInstance
+---@field id string
+---@field url string
 ---@field handle long
 ---@field txd string
 ---@field txn string
 local DuiInstance = {}
 DuiInstance.__index = DuiInstance
 
-DuiInstance.new = function(handle, txd, txn)
+local currentId = 0
+local duis = {}
+
+DuiInstance.new = function(handle, duiHandle, txd, txn, id, url)
     local self = setmetatable({}, DuiInstance)
+    self.id = id
     self.handle = handle
+    self.duiHandle = duiHandle
     self.txd = txd
     self.txn = txn
+    self.url = url
+
+    if Config.Debug then
+        print(('[KOJA] DuiInstance %s created with URL: %s'):format(self.id, self.url))
+    end
+
     return self
 end
 
-DuiInstance.getHandle = function(self)
+function DuiInstance:getHandle()
     return self.handle
 end
 
-DuiInstance.getTextureDict = function(self)
+function DuiInstance:getTextureDict()
     return self.txd
 end
 
-DuiInstance.getTextureName = function(self)
+function DuiInstance:getTextureName()
     return self.txn
 end
 
-DuiInstance.replaceTexture = function(self, originalTxd, originalTxn)
+function DuiInstance:replaceTexture(originalTxd, originalTxn)
     AddReplaceTexture(originalTxd, originalTxn, self.txd, self.txn)
 end
 
-DuiInstance.removeReplaceTexture = function(self, originalTxd, originalTxn)
+function DuiInstance:removeReplaceTexture(originalTxd, originalTxn)
     RemoveReplaceTexture(originalTxd, originalTxn)
 end
 
-DuiInstance.setUrl = function(self, newUrl)
+function DuiInstance:setUrl(newUrl)
+    self.url = newUrl
     SetDuiUrl(self.handle, newUrl)
 end
 
-DuiInstance.destroy = function(self)
+function DuiInstance:destroy()
     SetDuiUrl(self.handle, "about:blank")
     DestroyDui(self.handle)
+
+    if Config.Debug then
+        print(('[KOJA] DuiInstance %s destroyed'):format(self.id))
+    end
+
+    duis[self.id] = nil
 end
 
---- @param opts { url: string, width?: number, height?: number, debugName?: string }
+function DuiInstance:sendMessage(message)
+    SendDuiMessage(self.handle, json.encode(message))
+    if Config.Debug then
+        print("Dui "..self.id.." message sent with data: ", json.encode(message))
+    end
+end
+
+--- @param opts { url: string, width?: number, height?: number}
 --- @return DuiInstance
+
 KOJA.Client.CreateDui = function(opts)
     local url = opts.url
     local width = opts.width or 1280
     local height = opts.height or 720
-    local debugName = opts.debugName or ("dui_" .. GetGameTimer())
+
+    local time = GetGameTimer()
+    local id = ("koja_dui_%s_%s"):format(time, currentId)
+    currentId = currentId + 1
+
+    local dictName = ("koja_dui_dict_%s"):format(id)
+    local txtName = ("koja_dui_txt_%s"):format(id)
 
     local handle = CreateDui(url, width, height)
     local duiObj = GetDuiHandle(handle)
 
-    local txd = CreateRuntimeTxd(debugName)
-    local txn = "duiTex"
+    local txd = CreateRuntimeTxd(dictName)
+    CreateRuntimeTextureFromDuiHandle(txd, txtName, duiObj)
 
-    CreateRuntimeTextureFromDuiHandle(txd, txn, duiObj)
+    local instance = DuiInstance.new(handle, duiObj, dictName, txtName, id, url)
+    duis[id] = instance
 
-    return DuiInstance.new(handle, txd, txn)
+    return instance
 end
 
+-- local thisResource = GetCurrentResourceName()
+-- local url = ("nui://%s/html/index.html"):format(thisResource)
+
 -- CreateThread(function()
---     local pos = vector3(-66.6088, -1744.0963, 29.3141)
+--     local testcoords = vector3(-66.6088, -1744.0963, 29.3141)
+
+--     local width, height = GetActiveScreenResolution()
 
 --     local dui = KOJA.Client.CreateDui({
---         url = "https://http.cat/404",
---         width = 512,
---         height = 512,
---         debugName = "dui_stable_ui"
+--         url = url,
+--         width = width,
+--         height = height
 --     })
 
---     local txd = dui:getTextureDict()
---     local txn = dui:getTextureName()
+--     dui:setUrl(url)
+
+--     local txd, txn = dui.txd, dui.txn
+
+--     dui:sendMessage({
+--         type = "toggle-triangle",
+--         display = true
+--     })
 
 --     while true do
 --         Wait(0)
-
---         local onScreen, screenX, screenY = GetScreenCoordFromWorldCoord(pos.x, pos.y, pos.z)
-
---         if onScreen then
---             local resX, resY = GetActiveScreenResolution()
-
---             local width = 50 / resX
---             local height = 50 / resY
---             DrawSprite(
---                 txd,
---                 txn,
---                 screenX,
---                 screenY,
---                 width,
---                 height,
---                 0.0,
---                 255, 255, 255, 255
---             )
---         end
+--         SetDrawOrigin(testcoords.x, testcoords.y, testcoords.z, 0)
+--         DrawSprite(txd, txn, 0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 255)
+--         ClearDrawOrigin()
 --     end
 -- end)
-
-
-
 

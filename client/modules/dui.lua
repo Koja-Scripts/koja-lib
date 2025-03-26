@@ -4,14 +4,14 @@
 ---@field handle long
 ---@field txd string
 ---@field txn string
-local DuiInstance = {}
-DuiInstance.__index = DuiInstance
+KOJA.Client.DuiInstance = KOJA.Client.DuiInstance or {}
+KOJA.Client.DuiInstance.__index = KOJA.Client.DuiInstance
 
 local currentId = 0
 local duis = {}
 
-DuiInstance.new = function(handle, duiHandle, txd, txn, id, url)
-    local self = setmetatable({}, DuiInstance)
+KOJA.Client.DuiInstance.new = function(handle, duiHandle, txd, txn, id, url)
+    local self = setmetatable({}, KOJA.Client.DuiInstance)
     self.id = id
     self.handle = handle
     self.duiHandle = duiHandle
@@ -23,55 +23,54 @@ DuiInstance.new = function(handle, duiHandle, txd, txn, id, url)
         print(('[KOJA] DuiInstance %s created with URL: %s'):format(self.id, self.url))
     end
 
+    self.setUrl = function(self, newUrl)
+        self.url = newUrl
+        SetDuiUrl(self.handle, newUrl)
+    end
+
+    self.sendMessage = function(self, message)
+        SendDuiMessage(self.handle, json.encode(message))
+        if Config.Debug then
+            print(('[KOJA-LIB] DuiInstance %s message sent with data: %s'):format(self.id, message))
+        end
+    end
+
+    self.getHandle = function(self)
+        return self.handle
+    end
+
+    self.getTextureDict = function(self)
+        return self.txd
+    end
+
+    self.getTextureName = function(self)
+        return self.txn
+    end
+
+    self.replaceTexture = function(self, originalTxd, originalTxn)
+        AddReplaceTexture(originalTxd, originalTxn, self.txd, self.txn)
+    end
+
+    self.removeReplaceTexture = function(self, originalTxd, originalTxn)
+        RemoveReplaceTexture(originalTxd, originalTxn)
+    end
+
+    self.destroy = function(self)
+        SetDuiUrl(self.handle, "about:blank")
+        DestroyDui(self.handle)
+
+        if Config.Debug then
+            print(('[KOJA-LIB] DuiInstance %s destroyed'):format(self.id))
+        end
+
+        duis[self.id] = nil
+    end
+
     return self
-end
-
-function DuiInstance:getHandle()
-    return self.handle
-end
-
-function DuiInstance:getTextureDict()
-    return self.txd
-end
-
-function DuiInstance:getTextureName()
-    return self.txn
-end
-
-function DuiInstance:replaceTexture(originalTxd, originalTxn)
-    AddReplaceTexture(originalTxd, originalTxn, self.txd, self.txn)
-end
-
-function DuiInstance:removeReplaceTexture(originalTxd, originalTxn)
-    RemoveReplaceTexture(originalTxd, originalTxn)
-end
-
-function DuiInstance:setUrl(newUrl)
-    self.url = newUrl
-    SetDuiUrl(self.handle, newUrl)
-end
-
-function DuiInstance:destroy()
-    SetDuiUrl(self.handle, "about:blank")
-    DestroyDui(self.handle)
-
-    if Config.Debug then
-        print(('[KOJA] DuiInstance %s destroyed'):format(self.id))
-    end
-
-    duis[self.id] = nil
-end
-
-function DuiInstance:sendMessage(message)
-    SendDuiMessage(self.handle, json.encode(message))
-    if Config.Debug then
-        print("Dui "..self.id.." message sent with data: ", json.encode(message))
-    end
 end
 
 --- @param opts { url: string, width?: number, height?: number}
 --- @return DuiInstance
-
 KOJA.Client.CreateDui = function(opts)
     local url = opts.url
     local width = opts.width or 1280
@@ -90,40 +89,8 @@ KOJA.Client.CreateDui = function(opts)
     local txd = CreateRuntimeTxd(dictName)
     CreateRuntimeTextureFromDuiHandle(txd, txtName, duiObj)
 
-    local instance = DuiInstance.new(handle, duiObj, dictName, txtName, id, url)
+    local instance = KOJA.Client.DuiInstance.new(handle, duiObj, dictName, txtName, id, url)
     duis[id] = instance
 
     return instance
 end
-
--- local thisResource = GetCurrentResourceName()
--- local url = ("nui://%s/html/index.html"):format(thisResource)
-
--- CreateThread(function()
---     local testcoords = vector3(-66.6088, -1744.0963, 29.3141)
-
---     local width, height = GetActiveScreenResolution()
-
---     local dui = KOJA.Client.CreateDui({
---         url = url,
---         width = width,
---         height = height
---     })
-
---     dui:setUrl(url)
-
---     local txd, txn = dui.txd, dui.txn
-
---     dui:sendMessage({
---         type = "toggle-triangle",
---         display = true
---     })
-
---     while true do
---         Wait(0)
---         SetDrawOrigin(testcoords.x, testcoords.y, testcoords.z, 0)
---         DrawSprite(txd, txn, 0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 255)
---         ClearDrawOrigin()
---     end
--- end)
-

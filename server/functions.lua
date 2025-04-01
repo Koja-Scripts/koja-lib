@@ -10,13 +10,13 @@ KOJA.Server = {
 }
 
 AddEventHandler("onResourceStart", function(resource)
-    local _source = source
     if resource == GetCurrentResourceName() then
-        local resourceName = GetCurrentResourceName()
-        local realname = 'koja-lib'
-        if resourceName ~= realname then
-            StopResource(GetCurrentResourceName())
-            KOJA.Client.Print(5, true, '[koja-lib] THE NAME OF THE SCRIPT TO: '..realname..'!')
+        local expectedName = 'koja-lib'
+        local actualName = GetCurrentResourceName()
+
+        if actualName ~= expectedName then
+            StopResource(actualName)
+            print(string.format('^1[koja-lib]^0 CHANGE THE NAME OF THE SCRIPT TO: ^3%s^0', expectedName))
         end
     end
 end)

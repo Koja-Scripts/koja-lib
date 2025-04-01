@@ -43,7 +43,9 @@ RegisterCommand("laser", function()
             if hit and coords.x ~= 0.0 and coords.y ~= 0.0 then
                 DrawLine(position.x, position.y, position.z, coords.x, coords.y, coords.z, color.r, color.g, color.b, color.a)
                 DrawMarker(28, coords.x, coords.y, coords.z, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 0.1, 0.1, 0.1, color.r, color.g, color.b, color.a, false, true, 2, nil, nil, false)
-                print(("Coords: x = %.2f, y = %.2f, z = %.2f"):format(coords.x, coords.y, coords.z))
+                local heading = GetEntityHeading(PlayerPedId())
+                local reverseHeading = (heading + 180.0) % 360.0
+                print(("Coords: x = %.2f, y = %.2f, z = %.2f, h = %.2f, reverseH = %.2f"):format(coords.x, coords.y, coords.z, heading, reverseHeading))
             end
 
             if IsDisabledControlJustReleased(0, 200) or IsDisabledControlJustReleased(0, 73) then

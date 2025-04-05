@@ -14,7 +14,7 @@ KOJA.Client.GetPlayerJob = function()
     if KOJA.Framework == "esx" then
         local ESX = exports['es_extended']:getSharedObject()
         return ESX.PlayerData.job.name
-    elseif KOJA.Framework == "qb" or KOJA.Framework == "qbx" then
+    elseif KOJA.Framework == "qb" then
         local QBCore = exports['qb-core']:GetCoreObject()
         local PlayerData = QBCore.Functions.GetPlayerData()
         return PlayerData.job.name

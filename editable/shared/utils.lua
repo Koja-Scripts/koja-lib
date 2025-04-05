@@ -5,16 +5,19 @@ Misc.Utils.GetFramework = function()
     local frameworks = {
         ['es_extended'] = 'esx',
         ['qb-core']  = 'qb',
-        ['ox_core'] = 'ox'
+        ['ox_core'] = 'ox',
+        ['qbx_core'] = 'qb',
     }
 
     for framework, id in pairs(frameworks) do
         if GetResourceState(framework) == 'started' then
             if framework == 'es_extended' then
                 return id
-            elseif framework == 'qb-core' or framework == 'qbx_core' then
+            elseif framework == 'qb-core' then
                 return id
             elseif framework == 'ox_core' then
+                return id
+            elseif framework == 'qbx_core' then
                 return id
             end
         end

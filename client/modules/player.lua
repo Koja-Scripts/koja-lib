@@ -27,7 +27,7 @@ KOJA.Client.GetPlayerJobLabel = function()
     if framework == "esx" then 
         return ESX.PlayerData.job.label
     elseif framework == "qb" then 
-        return QBCore.job.label
+        return QBCore.Functions.GetPlayerData().job.label
     elseif framework == "ox" then
          return Ox.GetPlayer().get('job')
     end

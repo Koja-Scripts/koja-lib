@@ -10,3 +10,7 @@ Config.Debug = false -- Console logs
 Config.Notify = "ox"
 
 Config.CustomFramework = false
+
+Config.PoliceGroups = {
+    ["police"] = true,
+}

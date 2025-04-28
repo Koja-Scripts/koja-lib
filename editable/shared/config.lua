@@ -14,3 +14,8 @@ Config.CustomFramework = false
 Config.PoliceGroups = {
     ["police"] = true,
 }
+
+Config.Laser = {
+    enable = true,
+    command = 'laser'
+}

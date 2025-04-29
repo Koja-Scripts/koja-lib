@@ -102,12 +102,16 @@ KOJA.Client.points = {
         if type(args[1]) == 'table' then
             self = args[1]
             self.id = id
-            self.remove = removePoint
+            self.remove = function()
+                removePoint(self)
+            end
         else
             self = {
                 id = id,
                 coords = args[1],
-                remove = removePoint,
+                remove = function()
+                    removePoint(self)
+                end,
             }
         end
 

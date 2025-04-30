@@ -238,3 +238,91 @@ else
     end
 
 end
+
+local resourceName = GetCurrentResourceName()
+local manifestFile = 'fxmanifest.lua'
+
+isResourceStarted = function(name)
+    return GetResourceState(name) == 'started'
+end
+
+ensureEntries = function(lines, useOx, useESX)
+    local hasOx, hasESX = false, false
+    local insertIdx
+
+    for idx, line in ipairs(lines) do
+        if line:match("^%s*shared_scripts%s*{") then
+            insertIdx = idx + 1
+        end
+        if line:match("[\"']@ox_core/lib/init%.lua[\"']") then
+            hasOx = true
+        end
+        if line:match("[\"']@es_extended/imports%.lua[\"']") then
+            hasESX = true
+        end
+    end
+
+    if insertIdx then
+        if not hasOx then
+            local prefix = useOx and "" or "-- "
+            table.insert(lines, insertIdx, prefix .. "'@ox_core/lib/init.lua',")
+        end
+        if not hasESX then
+            local prefix = useESX and "" or "-- "
+            table.insert(lines, insertIdx + (hasOx and 1 or 0), prefix .. "'@es_extended/imports.lua',")
+        end
+    end
+
+    return lines
+end
+
+processManifest = function()
+    local content = LoadResourceFile(resourceName, manifestFile)
+    if not content then
+        print(('[%s] ❌ Failed to load %s'):format(resourceName, manifestFile))
+        return
+    end
+
+    local useOx  = isResourceStarted('ox_core')
+    local useESX = isResourceStarted('es_extended')
+
+    if useOx  then print(('> ox_core detected — uncommenting init.lua')) end
+    if not useOx  then print(('> ox_core not detected — commenting init.lua')) end
+    if useESX then print(('> es_extended detected — uncommenting imports.lua')) end
+    if not useESX then print(('> es_extended not detected — commenting imports.lua')) end
+
+    local lines = {}
+    for line in content:gmatch('[^\r\n]+') do
+        if line:match("[\"']@ox_core/lib/init%.lua[\"']") then
+            if useOx then
+                line = line:gsub("^%s*%-%-%s*", "")
+            else
+                line = "-- " .. line
+            end
+        end
+        if line:match("[\"']@es_extended/imports%.lua[\"']") then
+            if useESX then
+                line = line:gsub("^%s*%-%-%s*", "")
+            else
+                line = "-- " .. line
+            end
+        end
+        table.insert(lines, line)
+    end
+
+    lines = ensureEntries(lines, useOx, useESX)
+
+    local newContent = table.concat(lines, "\n")
+    local success = SaveResourceFile(resourceName, manifestFile, newContent, -1)
+    if success then
+        print(('[%s] ✅ Successfully updated %s'):format(resourceName, manifestFile))
+    else
+        print(('[%s] ❌ Failed to save %s'):format(resourceName, manifestFile))
+    end
+end 
+
+AddEventHandler('onResourceStart', function(resName)
+    if resName == resourceName then
+        processManifest()
+    end
+end)

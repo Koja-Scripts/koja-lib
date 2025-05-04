@@ -43,7 +43,7 @@ function SetInterval(callback, interval, ...)
         return error(('Callback must be a function. Received %s'):format(cbType))
     end
 
-    local args, id = { ... }
+    local gars, id = { ... }
 
     Citizen.CreateThreadNow(function(ref)
         id = ref

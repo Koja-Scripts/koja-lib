@@ -276,50 +276,96 @@ ensureEntries = function(lines, useOx, useESX)
     return lines
 end
 
+local resourceName = GetCurrentResourceName()
+local manifestFile = 'fxmanifest.lua'
+
+isResourceStarted = function(name)
+    return GetResourceState(name) == 'started'
+end
+
 processManifest = function()
     local content = LoadResourceFile(resourceName, manifestFile)
     if not content then
-        print(('[%s] ❌ Failed to load %s'):format(resourceName, manifestFile))
+        print(('[%s] Failed to load %s'):format(resourceName, manifestFile))
         return
     end
 
     local useOx  = isResourceStarted('ox_core')
     local useESX = isResourceStarted('es_extended')
 
-    if useOx  then print(('> ox_core detected — uncommenting init.lua')) end
-    if not useOx  then print(('> ox_core not detected — commenting init.lua')) end
-    if useESX then print(('> es_extended detected — uncommenting imports.lua')) end
-    if not useESX then print(('> es_extended not detected — commenting imports.lua')) end
+    print(useOx and '> ox_core detected — ensuring init.lua entry' or '> ox_core not detected — removing init.lua entry')
+    print(useESX and '> es_extended detected — ensuring imports.lua entry' or '> es_extended not detected — removing imports.lua entry')
 
     local lines = {}
     for line in content:gmatch('[^\r\n]+') do
-        if line:match("[\"']@ox_core/lib/init%.lua[\"']") then
-            if useOx then
-                line = line:gsub("^%s*%-%-%s*", "")
-            else
-                line = "-- " .. line
-            end
-        end
-        if line:match("[\"']@es_extended/imports%.lua[\"']") then
-            if useESX then
-                line = line:gsub("^%s*%-%-%s*", "")
-            else
-                line = "-- " .. line
-            end
-        end
-        table.insert(lines, line)
+        lines[#lines+1] = line
     end
 
-    lines = ensureEntries(lines, useOx, useESX)
+    local startIdx, endIdx
+    for i, line in ipairs(lines) do
+        if line:match('^%s*shared_scripts%s*{') then
+            startIdx = i
+        elseif startIdx and line:match('^%s*}') then
+            endIdx = i
+            break
+        end
+    end
 
-    local newContent = table.concat(lines, "\n")
+    if not startIdx or not endIdx then
+        print(('[%s] shared_scripts block not found'):format(resourceName))
+        return
+    end
+
+    local existing = {}
+    for i = startIdx + 1, endIdx - 1 do
+        local l = lines[i]
+        if not l:find("@ox_core/lib/init.lua") and not l:find("@es_extended/imports.lua") then
+            existing[#existing+1] = l
+        end
+    end
+
+    local desired = {}
+    if useOx  then desired[#desired+1] = "    '@ox_core/lib/init.lua'," end
+    if useESX then desired[#desired+1] = "    '@es_extended/imports.lua'," end
+
+    local currentBlock = {}
+    for i = startIdx + 1, endIdx - 1 do
+        currentBlock[#currentBlock+1] = lines[i]
+    end
+
+    local newBlock = {}
+    for _, v in ipairs(desired)   do newBlock[#newBlock+1] = v end
+    for _, v in ipairs(existing)  do newBlock[#newBlock+1] = v end
+
+    local unchanged = #currentBlock == #newBlock
+    if unchanged then
+        for i = 1, #currentBlock do
+            if currentBlock[i] ~= newBlock[i] then
+                unchanged = false
+                break
+            end
+        end
+    end
+
+    if unchanged then
+        print(('[%s] No changes needed for %s'):format(resourceName, manifestFile))
+        return
+    end
+
+    local updated = {}
+    for i = 1, startIdx do updated[#updated+1] = lines[i] end
+    for _, v in ipairs(newBlock)  do updated[#updated+1] = v end
+    updated[#updated+1] = lines[endIdx]
+    for i = endIdx + 1, #lines do updated[#updated+1] = lines[i] end
+
+    local newContent = table.concat(updated, "\n")
     local success = SaveResourceFile(resourceName, manifestFile, newContent, -1)
     if success then
-        print(('[%s] ✅ Successfully updated %s'):format(resourceName, manifestFile))
+        print(('[%s] Successfully updated %s'):format(resourceName, manifestFile))
     else
-        print(('[%s] ❌ Failed to save %s'):format(resourceName, manifestFile))
+        print(('[%s] Failed to save %s'):format(resourceName, manifestFile))
     end
-end 
+end
 
 AddEventHandler('onResourceStart', function(resName)
     if resName == resourceName then

@@ -22,7 +22,7 @@ Citizen.CreateThread(function()
 
             local latestVersion = response.tag_name:match('%d+%.%d+%.%d+')
             if not latestVersion or latestVersion == currentVersion then 
-                return print(("^2✅ %s is up to date! Version: ^3%s^2 | Framework: ^3"..string.upper(KOJA.Framework).."^0"):format(resourceName, currentVersion)) 
+                return print(("^2✅  - %s is up to date! Version: ^3%s^2 | Framework: ^3"..string.upper(KOJA.Framework).."^0"):format(resourceName, currentVersion)) 
             end
 
             local cv = { string.strsplit('.', currentVersion) }

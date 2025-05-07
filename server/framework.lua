@@ -6,7 +6,8 @@ if not Config.CustomFramework then
 
         local convertMoney = {
             ["cash"] = "money",
-            ["bank"] = "bank"
+            ["bank"] = "bank",
+            ["black"] = "black_money"
         }
 
         GetPlayers = function()

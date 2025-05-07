@@ -51,7 +51,16 @@ function SetInterval(callback, interval, ...)
         repeat
             interval = intervals[id]
             Wait(interval)
-            callback(table.unpack(args))
+            local ok, err = pcall(function()
+                if gars and #gars > 0 then
+                    callback(table.unpack(gars))
+                else
+                    callback()
+                end
+            end)
+            if not ok then
+                print('SetInterval callback error:', err)
+            end
         until interval < 0
         intervals[id] = nil
     end)

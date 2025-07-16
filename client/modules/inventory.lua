@@ -1,6 +1,7 @@
 ---@return number # Liczba określonych przedmiotów w ekwipunku
 KOJA.Client.GetItemCount = function(item)
     if KOJA.Framework == "esx" then
+        local ESX = exports['es_extended']:getSharedObject()
         local playerData = ESX.GetPlayerData()
         for _, inventoryItem in ipairs(playerData.inventory) do
             if inventoryItem.name == item then

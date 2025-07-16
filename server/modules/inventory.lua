@@ -13,3 +13,7 @@ end
 KOJA.Server.removeInventoryItem = function(source, name, count)
     return removeInventoryItem(source, name, count)
 end
+
+KOJA.Server.getInventoryItemCount = function(source, name)
+    return getInventoryItemCount(source, name)
+end

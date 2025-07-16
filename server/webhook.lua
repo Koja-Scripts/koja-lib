@@ -1,3 +1,3 @@
 KOJA.Server.Webhooks = {
-    ['dailyrewards'] = ''
+    ['cardealer'] = ''
 }

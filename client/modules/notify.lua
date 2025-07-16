@@ -21,7 +21,8 @@ KOJA.Client.SendNotify = function(data)
             lib.notify({
                 title = data.title,
                 description = data.desc,
-                type = 'success'
+                type = 'success',
+                position = data.position or 'top'
             })
         end
     elseif KOJA.Framework == 'custom' then

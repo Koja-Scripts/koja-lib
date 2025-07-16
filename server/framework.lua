@@ -93,6 +93,21 @@ if not Config.CustomFramework then
             return true
         end
 
+        getInventoryItemCount = function(src, name)
+
+            local Player = getPlayer(src)
+            if not Player then
+                return false
+            end
+
+            local item = Player.getInventoryItem(name)
+            if not item then 
+                return 0
+            end
+
+            return item.count
+        end
+
     elseif GetResourceState('ox_core') == 'started' then
 
         GetPlayers = function()

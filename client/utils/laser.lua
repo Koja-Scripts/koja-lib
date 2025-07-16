@@ -1,4 +1,4 @@
-if Config.Laser.enable ~= true then
+if Config.Laser.enable then
 
     KOJA.Client.RotationToDirection = function(rotation)
         local adjustedRotation = {

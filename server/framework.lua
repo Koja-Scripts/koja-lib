@@ -108,6 +108,15 @@ if not Config.CustomFramework then
             return item.count
         end
 
+        getPlayerGroup = function(src)
+            local Player = getPlayer(src)
+            if not Player then
+                return false
+            end
+
+            return Player.getGroup()
+        end
+
     elseif GetResourceState('ox_core') == 'started' then
 
         GetPlayers = function()
@@ -164,6 +173,26 @@ if not Config.CustomFramework then
         removeInventoryItem = function(src, name, count)
             exports.ox_inventory:RemoveItem(src, name, count)
             return true
+        end
+
+        getInventoryItemCount = function(src, name)
+            local total = 0
+            local items = exports.ox_inventory:GetInventoryItems(src)
+        
+            if not items then return 0 end
+        
+            for _, item in pairs(items) do
+                if item.name == name then
+                    total = total + (item.count or 0)
+                end
+            end
+        
+            return total
+        end
+
+        getPlayerGroup = function(src)
+            local player = getPlayer(src)
+            return player.getGroup()
         end
 
     elseif GetResourceState('qb-core') == 'started' then
@@ -226,6 +255,29 @@ if not Config.CustomFramework then
             return true
         end
 
+        getInventoryItemCount = function(src, name)
+            local Player = getPlayer(src)
+            if not Player then
+                return 0
+            end
+
+            local item = Player.Functions.GetItemByName(name)
+            if not item then 
+                return 0
+            end
+
+            return item.count
+        end
+
+        getPlayerGroup = function(src)
+            local Player = getPlayer(src)
+            if not Player then
+                return false
+            end
+
+            return Player.PlayerData.group
+        end
+        
     end
 else
 

@@ -19,3 +19,7 @@ end
 KOJA.Server.GetPlayers = function()
     return GetPlayers()
 end
+
+KOJA.Server.GetPlayerGroup = function(source)
+    return getPlayerGroup(source)
+end

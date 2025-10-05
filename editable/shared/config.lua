@@ -19,3 +19,11 @@ Config.Laser = {
     enable = true,
     command = 'laser'
 }
+
+Config.SaveVehicleConfig = {
+    Charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    NumberCharset = "0123456789",
+    Letters = 4, -- Number of letters in the license plate
+    Numbers = 4,  -- Number of digits in the license plate
+    Separator = "" -- Separator between characters on the license plate
+}

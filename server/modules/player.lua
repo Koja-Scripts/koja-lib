@@ -21,5 +21,6 @@ KOJA.Server.GetPlayers = function()
 end
 
 KOJA.Server.GetPlayerGroup = function(source)
+    print(source)
     return getPlayerGroup(source)
 end

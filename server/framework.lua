@@ -192,7 +192,9 @@ if not Config.CustomFramework then
 
         getPlayerGroup = function(src)
             local player = getPlayer(src)
-            return player.getGroup()
+            print(json.encode(player))
+            print(player:getGroup())
+            return  player:getGroup()
         end
 
     elseif GetResourceState('qb-core') == 'started' then

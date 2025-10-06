@@ -192,8 +192,6 @@ if not Config.CustomFramework then
 
         getPlayerGroup = function(src)
             local player = getPlayer(src)
-            print(json.encode(player))
-            print(player:getGroup())
             return  player:getGroup()
         end
 

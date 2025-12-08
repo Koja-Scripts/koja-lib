@@ -9,7 +9,6 @@ games {
     'gta5'
 }
 shared_scripts {
-    '@ox_core/lib/init.lua',
     'editable/shared/config.lua',
     'editable/shared/utils.lua',
 }

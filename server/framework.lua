@@ -260,13 +260,13 @@ if not Config.CustomFramework then
             if not Player then
                 return 0
             end
-
+            
             local item = Player.Functions.GetItemByName(name)
             if not item then 
                 return 0
             end
 
-            return item.count
+            return item.amount
         end
 
         getPlayerGroup = function(src)

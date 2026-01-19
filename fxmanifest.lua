@@ -9,6 +9,7 @@ games {
     'gta5'
 }
 shared_scripts {
+    '@es_extended/imports.lua',
     'editable/shared/config.lua',
     'editable/shared/utils.lua',
 }

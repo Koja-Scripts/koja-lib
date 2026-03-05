@@ -25,6 +25,8 @@ KOJA.Client.SendNotify = function(data)
                 position = data.position or 'top'
             })
         end
+    elseif Config.Notify == 'lib' then
+        KOJA.Client.LibNotify(data)
     elseif KOJA.Framework == 'custom' then
         Misc.Utils.customNotify(data)
     end

@@ -20,7 +20,8 @@ client_scripts {
     'client/modules/*.lua',
     'client/utils/*.lua',
     'client/storage/init.lua',
-    'client/storage/storage.lua'
+    'client/storage/storage.lua',
+    'client/ui/*.lua',
 }
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
@@ -32,4 +33,12 @@ server_scripts {
 }
 files {
 	'init.lua',
+}
+
+ui_page 'web/build/index.html'
+
+files {
+    'web/build/index.html',
+    'web/build/**/*',
+    'web/build/**/**/*',
 }

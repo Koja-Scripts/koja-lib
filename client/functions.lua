@@ -4,7 +4,6 @@ KOJA.Misc = Misc.Utils
 KOJA.Client = {}
 
 KOJA.Client.SendReactMessage = function(action, data)
-    print("Sending React Message: " .. action)
     SendNUIMessage({
         action = action,
         data = data

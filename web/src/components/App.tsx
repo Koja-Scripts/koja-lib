@@ -66,7 +66,6 @@ const App: React.FC = () => {
   const dispatch = useDispatch();
 
   useNuiEvent('koja-lib:nui:startProgressBar', (data: ProgressBarData) => {
-    console.log(JSON.stringify(data));
     dispatch(startProgressBar(data));
   });
 

@@ -11,6 +11,12 @@ KOJA.Server.GetPlayerIdentifier = function(source)
 end
 
 ---@param source number # Player ID
+---@return string # Character first name and last name from the framework (or GetPlayerName fallback)
+KOJA.Server.GetPlayerName = function(source)
+    return getPlayerName and getPlayerName(source) or GetPlayerName(source) or ''
+end
+
+---@param source number # Player ID
 ---@return table # Player job object based on the current framework
 KOJA.Server.GetPlayerJob = function(source)
     return getPlayerJob(source)

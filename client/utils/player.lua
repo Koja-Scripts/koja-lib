@@ -13,22 +13,33 @@ end
 KOJA.Client.GetPlayerJob = function()
     if KOJA.Framework == "esx" then
         local ESX = exports['es_extended']:getSharedObject()
-        local job = ESX.GetPlayerData().job
-        if job then return job.name, job.grade end
+        return ESX.PlayerData.job.name
     elseif KOJA.Framework == "qb" then
         local QBCore = exports['qb-core']:GetCoreObject()
         local PlayerData = QBCore.Functions.GetPlayerData()
-        if PlayerData and PlayerData.job then return PlayerData.job.name, PlayerData.job.grade.level end
+        return PlayerData.job.name
     elseif KOJA.Framework == "ox" then
         local player = Ox.GetPlayer()
-        if player then 
-            local job = player.get('job')
-            if job then return job.name, job.grade end
-        end
+        return player.get('job')
     elseif KOJA.Framework == 'custom' then
-        return 'unemployed', 1
+        return --
     end
-    return 'unemployed', 1
+end
+
+KOJA.Client.GetPlayerJobLabel = function()
+    if KOJA.Framework == "esx" then
+        local ESX = exports['es_extended']:getSharedObject()
+        return ESX.PlayerData.job.label
+    elseif KOJA.Framework == "qb" then
+        local QBCore = exports['qb-core']:GetCoreObject()
+        local PlayerData = QBCore.Functions.GetPlayerData()
+        return PlayerData.job.label
+    elseif KOJA.Framework == "ox" then
+        local player = Ox.GetPlayer()
+        return player.get('job')
+    elseif KOJA.Framework == 'custom' then
+        return --
+    end
 end
 
 KOJA.Client.IsDead = function()

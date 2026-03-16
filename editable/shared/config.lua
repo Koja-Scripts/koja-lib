@@ -7,7 +7,7 @@ Config.Debug = false -- Console logs
 
 -- Notifications systems
 -- "esx", "qb", "ox"
-Config.Notify = "lib"
+Config.Notify = "esx"
 
 Config.CustomFramework = false
 

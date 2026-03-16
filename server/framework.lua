@@ -27,6 +27,15 @@ if not Config.CustomFramework then
             end
         end
 
+        getPlayerName = function(src)
+            local Player = getPlayer(src)
+            if not Player then return GetPlayerName(src) or '' end
+            local first = (Player.get and Player.get('firstName')) or (Player.PlayerData and Player.PlayerData.firstName)
+            local last = (Player.get and Player.get('lastName')) or (Player.PlayerData and Player.PlayerData.lastName)
+            if first and last then return (tostring(first) .. ' ' .. tostring(last)):gsub('^%s+', ''):gsub('%s+$', '') end
+            return GetPlayerName(src) or ''
+        end
+
         getPlayerJob = function(src)
             local Player = getPlayer(src)
             return Player.job.name, Player.job.grade
@@ -135,12 +144,21 @@ if not Config.CustomFramework then
                 return nil
             end
         end
-        
+
+        getPlayerName = function(src)
+            local player = getPlayer(src)
+            if not player then return GetPlayerName(src) or '' end
+            local first = player.state and (player.state.firstName or player.state.get and player.state.get('firstName'))
+            local last = player.state and (player.state.lastName or player.state.get and player.state.get('lastName'))
+            if first and last then return (tostring(first) .. ' ' .. tostring(last)):gsub('^%s+', ''):gsub('%s+$', '') end
+            return GetPlayerName(src) or ''
+        end
+
         getPlayerJob = function(src)
             local player = getPlayer(src)
             return player.getGroup()
         end
-        
+
         getMoney = function(src, mtype)
             if mtype == 'cash' then
                 return exports.ox_inventory:GetItemCount(src, 'money')
@@ -214,6 +232,16 @@ if not Config.CustomFramework then
             else
                 return nil
             end
+        end
+
+        getPlayerName = function(src)
+            local Player = getPlayer(src)
+            if not Player or not Player.PlayerData or not Player.PlayerData.charinfo then return GetPlayerName(src) or '' end
+            local c = Player.PlayerData.charinfo
+            local first = c.firstname or c.firstName
+            local last = c.lastname or c.lastName
+            if first and last then return (tostring(first) .. ' ' .. tostring(last)):gsub('^%s+', ''):gsub('%s+$', '') end
+            return GetPlayerName(src) or ''
         end
 
         getPlayerJob = function(src)
@@ -291,6 +319,10 @@ else
 
     getIdentifier = function(src)
         return --
+    end
+
+    getPlayerName = function(src)
+        return GetPlayerName(src) or ''
     end
 
     getPlayerJob = function(src)

@@ -61,11 +61,10 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({ notificati
     }, notification.duration * 1000);
     
     return () => clearTimeout(timer);
-  }, [notification.id, notification.duration, notification.timestamp, dispatch]);
+  }, [notification.id, notification.duration, dispatch]);
   
   useEffect(() => {
     if (notification.isRemoving) {
-      setIsVisible(false);
       const exitTimer = setTimeout(() => {
         dispatch(removeNotification(notification.id));
       }, 500);
@@ -77,7 +76,7 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({ notificati
   return (
     <div 
       className={`w-full min-h-[4vw] h-fit gap-[.4vw] px-[.8vw] rounded-[.25vw] flex items-center transform-gpu transition-all duration-500 ${
-        isVisible && !notification.isRemoving 
+        isVisible && !notification.isRemoving
           ? 'opacity-100 translate-y-0 scale-100' 
           : 'opacity-0 translate-y-[-1vw] scale-95'
       }`}

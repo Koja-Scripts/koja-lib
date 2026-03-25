@@ -30,7 +30,7 @@ startProgressbar = function(data, callback)
             Wait(10)
         end
         local animFlag = data.animation.flag ~= nil and data.animation.flag or 1
-        TaskPlayAnim(playerPed, data.animation.dict, data.animation.name, 8.0, -8.0, duration, animFlag, 0, false, false, false)
+        TaskPlayAnim(playerPed, data.animation.dict, data.animation.name, 8.0, -8.0, duration, animFlag, 0, false, false, false) 
     end
     
     CreateThread(function()

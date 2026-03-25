@@ -1,13 +1,14 @@
 fx_version 'cerulean'
 name 'koja-lib'
 author 'Koja Scripts'
-version '1.0.5'
+version '1.0.6'
 description 'Library to scripts'
 use_fxv2_oal 'true'
 lua54 'yes'
 games {
     'gta5'
 }
+
 shared_scripts {
     '@es_extended/imports.lua',
     'editable/shared/config.lua',

@@ -1,10 +1,11 @@
 fx_version 'cerulean'
 name 'koja-lib'
 author 'Koja Scripts'
-version '1.0.6'
+version '1.0.7'
 description 'Library to scripts'
 use_fxv2_oal 'true'
 lua54 'yes'
+
 games {
     'gta5'
 }
@@ -14,6 +15,7 @@ shared_scripts {
     'editable/shared/config.lua',
     'editable/shared/utils.lua',
 }
+
 client_scripts {
     'client/functions.lua',
     'client/threads.lua',
@@ -24,6 +26,7 @@ client_scripts {
     'client/storage/storage.lua',
     'client/ui/*.lua',
 }
+
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'server/framework.lua',
@@ -32,6 +35,7 @@ server_scripts {
     'server/webhook.lua',
     'server/modules/*.lua'
 }
+
 files {
 	'init.lua',
 }

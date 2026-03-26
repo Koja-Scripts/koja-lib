@@ -59,7 +59,9 @@ function SetInterval(callback, interval, ...)
                 end
             end)
             if not ok then
-                print('SetInterval callback error:', err)
+                if Config.Debug then
+                    print('SetInterval callback error:', err)
+                end
             end
         until interval < 0
         intervals[id] = nil
@@ -99,6 +101,11 @@ local function removePoint(self)
     if closestPoint?.id == self.id then
         closestPoint = nil
     end
+    self.inside = nil
+    self.currentDistance = nil
+    self.onEnter = nil
+    self.onExit = nil
+    self.nearby = nil
     points[self.id] = nil
 end
 
@@ -126,6 +133,7 @@ KOJA.Client.points = {
 
         self.coords = toVector(self.coords)
         self.distance = self.distance or args[2]
+        self.resource = self.resource or GetInvokingResource() or GetCurrentResourceName()
 
         if args[3] then
             for k, v in pairs(args[3]) do
@@ -151,6 +159,14 @@ KOJA.Client.points = {
     end,
 }
 
+AddEventHandler('onResourceStop', function(resource)
+    for _, point in pairs(points) do
+        if point and point.resource == resource then
+            removePoint(point)
+        end
+    end
+end)
+
 CreateThread(function()
     while true do
         if nearbyCount ~= 0 then
@@ -165,6 +181,10 @@ CreateThread(function()
         end
 
         for _, point in pairs(points) do
+            if point and point.resource and point.resource ~= GetCurrentResourceName() and GetResourceState(point.resource) ~= 'started' then
+                removePoint(point)
+                goto continue
+            end
             local distance = #(coords - point.coords)
 
             if distance <= point.distance then
@@ -188,13 +208,33 @@ CreateThread(function()
 
                 if point.onEnter and not point.inside then
                     point.inside = true
-                    point:onEnter()
+                    local ok, err = pcall(function()
+                        point:onEnter()
+                    end)
+                    if not ok then
+                        point.inside = nil
+                        point.onEnter = nil
+                        if Config.Debug then
+                            print('Point onEnter callback error:', err)
+                        end
+                    end
                 end
             elseif point.currentDistance then
-                if point.onExit then point:onExit() end
+                if point.onExit then
+                    local ok, err = pcall(function()
+                        point:onExit()
+                    end)
+                    if not ok then
+                        point.onExit = nil
+                        if Config.Debug then
+                            print('Point onExit callback error:', err)
+                        end
+                    end
+                end
                 point.inside = nil
                 point.currentDistance = nil
             end
+            ::continue::
         end
 
         if not tick then
@@ -202,8 +242,16 @@ CreateThread(function()
                 tick = SetInterval(function()
                     for i = 1, nearbyCount do
                         local point = nearbyPoints[i]
-                        if point then
-                            point:nearby()
+                        if point and point.nearby then
+                            local ok, err = pcall(function()
+                                point:nearby()
+                            end)
+                            if not ok then
+                                point.nearby = nil
+                                if Config.Debug then
+                                    print('Point nearby callback error:', err)
+                                end
+                            end
                         end
                     end
                 end)

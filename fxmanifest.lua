@@ -46,4 +46,5 @@ files {
     'web/build/index.html',
     'web/build/**/*',
     'web/build/**/**/*',
+    'web/build/sounds/*.mp4',
 }

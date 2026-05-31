@@ -9,7 +9,7 @@ koja-lib gives you a single, consistent API across ESX, QBCore, and QBX Core —
 ## What's inside
 
 - **Multi-framework support** — ESX, QBCore, QBX Core, or your own custom implementation
-- **Multi-inventory support** — ox_inventory, qb-inventory, qs-inventory, codem-inventory, jaksam_inventory with full auto-detection
+- **Multi-inventory support** — ox_inventory, qb-inventory, codem-inventory, jaksam_inventory with full auto-detection
 - **Unified API** — the same function calls regardless of what the server runs underneath
 - **Sounds** — NUI-based audio player with distance falloff, supports files from any resource
 - **UI components** — progress bar, Text UI, notifications, DUI dynamic textures

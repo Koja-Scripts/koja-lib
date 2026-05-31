@@ -6,10 +6,22 @@ Config.Locale = 'pl'
 Config.Debug = false -- Console logs
 
 -- Notifications systems
--- "esx", "qb", "ox"
+-- "esx", "qb", "ox" (ox = ox_lib notify), "lib" (built-in koja-lib notify)
 Config.Notify = "esx"
 
-Config.CustomFramework = false
+-- Framework used by your server.
+-- "auto"   -> detects es_extended / qb-core / qbx_core automatically
+-- "esx"    -> force ESX
+-- "qb"     -> force QBCore / Qbox
+-- "custom" -> use the functions you implement in editable/custom/framework_*.lua
+Config.Framework = "auto"
+
+-- Inventory system used by your server.
+-- "auto"   -> detects the running inventory resource automatically
+-- "custom" -> use the functions you implement in editable/custom/inventory_*.lua
+-- or force one by resource name, e.g.:
+-- "ox_inventory", "qb-inventory", "codem-inventory", "jaksam_inventory"
+Config.Inventory = "auto"
 
 Config.PoliceGroups = {
     ["police"] = true,

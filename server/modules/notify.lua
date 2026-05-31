@@ -8,20 +8,20 @@
 ---@param desc string # Notification description
 ---@param time number # Duration of the notification (in ms)
 KOJA.Server.SendNotify = function(data)
-    if Config.Notify == "esx" then
-        if KOJA.Framework == "esx" then
-            TriggerClientEvent("esx:ShowNotification", data.source, data.desc)
-        end
-    elseif Config.Notify == "qb" then
-        if KOJA.Framework == "qb" then
-            TriggerClientEvent("QBCore:Notify", data.source, data.title, data.type)
-        end
-    elseif Config.Notify == 'ox' then
-        if KOJA.Framework == 'ox' then
-            local duration = data.time or 5000
-            TriggerClientEvent('ox_lib:notify', data.source, {title = data.title, description = data.desc, type = data.type, duration = duration})
-        end
-    elseif KOJA.Framework == 'custom' then
+    local backend = Config.Notify
+
+    if backend == "esx" then
+        TriggerClientEvent("esx:ShowNotification", data.source, data.desc)
+    elseif backend == "qb" then
+        TriggerClientEvent("QBCore:Notify", data.source, data.desc or data.title, data.type or "primary")
+    elseif backend == 'ox' then
+        TriggerClientEvent('ox_lib:notify', data.source, {
+            title = data.title,
+            description = data.desc,
+            type = data.type or 'inform',
+            duration = data.time or 5000
+        })
+    else
         Misc.Utils.customNotify(data)
     end
 end

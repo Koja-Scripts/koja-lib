@@ -21,7 +21,12 @@ const normalizeVolume = (value?: number) => {
 	return Math.min(1, Math.max(0, value));
 };
 
-const resolveAudioPath = (file: string) => `./sounds/${file}.mp3`;
+const resolveAudioPath = (file: string) => {
+	if (file.startsWith("http") || file.startsWith("nui://")) {
+		return file;
+	}
+	return `./sounds/${file}.mp3`;
+};
 
 const Sounds = () => {
 	const activeSoundsRef = useRef<Map<string, HTMLAudioElement>>(new Map());

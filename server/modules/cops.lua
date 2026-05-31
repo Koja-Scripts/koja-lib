@@ -1,67 +1,26 @@
-KOJA.Server.RegisterServerCallback("koja-heistlib:Server:getCopCount", function(source, data, cb)
+-- Counts online players whose job/group is flagged as police in Config.PoliceGroups.
+local function countCops()
     local count = 0
+    local players = KOJA.Server.GetPlayers() or {}
 
-    local players = KOJA.Server.GetPlayers()
-    if KOJA.Framework == 'esx' then
-        for _, player in ipairs(players) do
-            local Player = ESX.GetPlayerFromId(player)
-            if Config.PoliceGroups[Player.job.name] then
-                count += 1
-            end
-        end 
-    elseif KOJA.Framework == 'ox' then
-        for _, player in ipairs(players) do
-            local Player = KOJA.Server.GetPlayerBySource(player.source)
-            if Player then
-                local policeGroup = Player.getGroup("police")
-                if policeGroup then
-                    count = count + 1
-                end
-            end
+    for _, entry in ipairs(players) do
+        -- GetPlayers returns ids (esx/qb) or player objects depending on framework.
+        local src = type(entry) == 'table' and entry.source or entry
+        local jobName = KOJA.Server.GetPlayerJob(src)
+        if jobName and Config.PoliceGroups[jobName] then
+            count = count + 1
         end
-    elseif KOJA.Framework == 'qb' then
-        for _, player in ipairs(players) do
-            local Player = KOJA.Server.GetPlayerBySource(player)
-            if Config.PoliceGroups[Player.PlayerData.job.name] then
-                count += 1
-            end
-        end 
-    end 
+    end
 
-    cb({ count = count })
+    return count
+end
+
+KOJA.Server.RegisterServerCallback("koja-heistlib:Server:getCopCount", function(source, data, cb)
+    cb({ count = countCops() })
 end)
 
 KOJA.Server.GetCopCount = function()
-    local count = 0
-
-    local players = KOJA.Server.GetPlayers()
-    if KOJA.Framework == 'esx' then
-        for _, player in ipairs(players) do
-            local Player = ESX.GetPlayerFromId(player)
-            if Config.PoliceGroups[Player.job.name] then
-                count += 1
-            end
-        end 
-    elseif KOJA.Framework == 'ox' then
-        for _, player in ipairs(players) do
-            local Player = KOJA.Server.GetPlayerBySource(player.source)
-            if Player then
-                local policeGroup = Player.getGroup("police")
-                if policeGroup then
-                    count = count + 1
-                end
-            end
-        end
-    elseif KOJA.Framework == 'qb' then
-        for _, player in ipairs(players) do
-            local Player = KOJA.Server.GetPlayerBySource(player)
-            if Config.PoliceGroups[Player.PlayerData.job.name] then
-                count += 1
-            end
-        end 
-    end   
-
-    return count
+    return countCops()
 end
 
 exports('getCopCount', KOJA.Server.GetCopCount)

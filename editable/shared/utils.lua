@@ -1,27 +1,27 @@
 Misc = {}
 Misc.Utils = {}
 
+---@return string # 'esx' | 'qb' | 'custom'
 Misc.Utils.GetFramework = function()
+    local override = Config and Config.Framework
+
+    if override and override ~= '' and override ~= 'auto' then
+        return override
+    end
+
+    -- Ordered detection. qbx_core ships qb-core compatibility, both map to 'qb'.
     local frameworks = {
-        ['es_extended'] = 'esx',
-        ['qb-core']  = 'qb',
-        ['ox_core'] = 'ox',
-        ['qbx_core'] = 'qb',
+        { resource = 'es_extended', id = 'esx' },
+        { resource = 'qbx_core',    id = 'qb'  },
+        { resource = 'qb-core',     id = 'qb'  },
     }
 
-    for framework, id in pairs(frameworks) do
-        if GetResourceState(framework) == 'started' then
-            if framework == 'es_extended' then
-                return id
-            elseif framework == 'qb-core' then
-                return id
-            elseif framework == 'ox_core' then
-                return id
-            elseif framework == 'qbx_core' then
-                return id
-            end
+    for _, framework in ipairs(frameworks) do
+        if GetResourceState(framework.resource) == 'started' then
+            return framework.id
         end
     end
+
     return 'custom'
 end
 

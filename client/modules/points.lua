@@ -98,7 +98,7 @@ local function toVector(coords)
 end
 
 local function removePoint(self)
-    if closestPoint?.id == self.id then
+    if closestPoint and closestPoint.id == self.id then
         closestPoint = nil
     end
     self.inside = nil

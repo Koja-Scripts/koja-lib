@@ -8,52 +8,41 @@
 ---@param desc string # Notification description
 ---@param time number # Duration of the notification (in ms)
 KOJA.Client.SendNotify = function(data)
-    if Config.Notify == "esx" then
-        if KOJA.Framework == "esx" then
-            ESX.ShowNotification(data.desc)
-        end
-    elseif Config.Notify == "qb" then
-        if KOJA.Framework == "qb" then
-            QBCore.Functions.Notify(data.desc, "success")
-        end
-    elseif Config.Notify == 'ox' then
-        if KOJA.Framework == 'ox' then
-            lib.notify({
-                title = data.title,
-                description = data.desc,
-                type = 'success',
-                position = data.position or 'top'
-            })
-        end
-    elseif Config.Notify == 'lib' then
+    local backend = Config.Notify
+
+    if backend == "esx" and ESX then
+        ESX.ShowNotification(data.desc)
+    elseif backend == "qb" and QBCore then
+        QBCore.Functions.Notify(data.desc, data.type or "success")
+    elseif backend == 'ox' and GetResourceState('ox_lib') == 'started' then
+        lib.notify({
+            title = data.title,
+            description = data.desc,
+            type = data.type or 'success',
+            position = data.position or 'top'
+        })
+    elseif backend == 'lib' then
         KOJA.Client.LibNotify(data)
-    elseif KOJA.Framework == 'custom' then
+    else
         Misc.Utils.customNotify(data)
     end
 end
 
 KOJA.Client.ShowFreemodeMessage = function(data)
-    if Config.Notify == "esx" then
-        if KOJA.Framework == "esx" then
-            ESX.Scaleform.ShowFreemodeMessage(data.title, data.desc, data.time or 5)
-        end
+    local backend = Config.Notify
 
-    elseif Config.Notify == "qb" then
-        if KOJA.Framework == "qb" then
-            QBCore.Functions.Notify(data.desc, "success")
-        end
+    if backend == "esx" and ESX then
+        ESX.Scaleform.ShowFreemodeMessage(data.title, data.desc, data.time or 5)
 
-    elseif Config.Notify == 'ox' then
-        if KOJA.Framework == 'ox' then
-            lib.notify({
-                title = data.title,
-                description = data.desc,
-                type = 'success'
-            })
-        end
+    elseif backend == "qb" and QBCore then
+        QBCore.Functions.Notify(data.desc, data.type or "success")
 
-    elseif KOJA.Framework == 'custom' then
-        Misc.Utils.customNotify(data)
+    elseif backend == 'ox' and GetResourceState('ox_lib') == 'started' then
+        lib.notify({
+            title = data.title,
+            description = data.desc,
+            type = data.type or 'success'
+        })
 
     else
         local scaleform = RequestScaleformMovie("mp_big_message_freemode")

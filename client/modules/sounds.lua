@@ -49,3 +49,29 @@ AddEventHandler('koja-lib:client:stopSound', function(soundId)
         soundId = soundId
     })
 end)
+
+----------------------------------------------------------------------
+-- Exports (other resources can call these directly)
+----------------------------------------------------------------------
+
+-- Plays a sound for the local player.
+-- file: short name ('alert') resolved to koja-lib/sounds/alert.mp3, OR
+--       full NUI URL ('https://cfx-nui-my-script/sounds/alert.mp3')
+exports('PlaySound', function(file, volume, soundId, loop)
+    if type(file) ~= 'string' or file == '' then return end
+    KOJA.Client.SendReactMessage('koja-lib:nui:createSound', {
+        type   = 'playSound',
+        file   = file,
+        volume = volume or KOJA.Client.Sounds.defaultSoundVolume,
+        soundId = soundId,
+        loop   = loop == true,
+    })
+end)
+
+exports('StopSound', function(soundId)
+    if type(soundId) ~= 'string' or soundId == '' then return end
+    KOJA.Client.SendReactMessage('koja-lib:nui:createSound', {
+        type    = 'stopSound',
+        soundId = soundId,
+    })
+end)

@@ -1,6 +1,7 @@
 KOJA = {}
 
 KOJA.Framework = Misc.Utils.GetFramework()
+KOJA.Inventory = Misc.Utils.GetInventory()
 KOJA.Misc = Misc.Utils
 KOJA.Server = {
     MySQL = {

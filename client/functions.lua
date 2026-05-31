@@ -1,5 +1,6 @@
 KOJA = {}
 KOJA.Framework = Misc.Utils.GetFramework()
+KOJA.Inventory = Misc.Utils.GetInventory()
 KOJA.Misc = Misc.Utils
 KOJA.Client = {}
 
@@ -13,9 +14,10 @@ end
 if KOJA.Framework == 'esx' then
     ESX = exports['es_extended']:getSharedObject()
 elseif KOJA.Framework == 'qb' then
-    QBCore = exports['qb-core']:GetCoreObject()
-elseif KOJA.Framework == 'ox' then
-    player = Ox.GetPlayer()
+    pcall(function() QBCore = exports['qb-core']:GetCoreObject() end)
+    if not QBCore then
+        pcall(function() QBCore = exports.qbx_core:GetCoreObject() end)
+    end
 end
 
 AddEventHandler('koja:getSharedObject', function(cb)

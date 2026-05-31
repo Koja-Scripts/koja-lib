@@ -1,380 +1,297 @@
-if not Config.CustomFramework then
+local FRAMEWORK = Misc.Utils.GetFramework()
 
-    if GetResourceState('es_extended') == 'started' then     
+if FRAMEWORK == 'esx' then
 
-        local ESX = exports['es_extended']:getSharedObject()
+    local ESX = exports['es_extended']:getSharedObject()
 
-        local convertMoney = {
-            ["cash"] = "money",
-            ["bank"] = "bank",
-            ["black"] = "black_money"
-        }
-
-        GetPlayers = function()
-            return ESX.GetPlayers()
-        end
-
-        getPlayer = function(src)
-            return ESX.GetPlayerFromId(src)
-        end
-
-        getIdentifier = function(src)
-            local Player = getPlayer(src)
-            if Player then
-                return Player.identifier
-            else
-                return nil
-            end
-        end
-
-        getPlayerName = function(src)
-            local Player = getPlayer(src)
-            if not Player then return GetPlayerName(src) or '' end
-            local first = (Player.get and Player.get('firstName')) or (Player.PlayerData and Player.PlayerData.firstName)
-            local last = (Player.get and Player.get('lastName')) or (Player.PlayerData and Player.PlayerData.lastName)
-            if first and last then return (tostring(first) .. ' ' .. tostring(last)):gsub('^%s+', ''):gsub('%s+$', '') end
-            return GetPlayerName(src) or ''
-        end
-
-        getPlayerJob = function(src)
-            local Player = getPlayer(src)
-            return Player.job.name, Player.job.grade
-        end
-
-        getMoney = function(src, mtype)
-            local Player = getPlayer(src)
-            if not Player then return end
-            mtype = convertMoney[mtype] or mtype
-            local account = Player.getAccount(mtype)
-            if not account then print('[ESX] Account missed, add ESX accounts for the script to work properly') end
-            return Player.getAccount(mtype).money
-        end
-
-        addMoney = function(src, amount, mtype, reason)
-            local mtype = convertMoney[mtype] or mtype
-
-            local Player = getPlayer(src)
-            if not Player then
-                return false
-            end
-
-            Player.addAccountMoney(mtype, amount, reason)
-            return true
-        end
-
-        removeMoney = function(src, amount, mtype, reason)
-            local mtype = convertMoney[mtype] or mtype
-
-            local Player = getPlayer(src)
-            if not Player then
-                return false
-            end
-
-            if Player.getAccount(mtype).money < amount then
-                return false
-            end
-
-            Player.removeAccountMoney(mtype, amount, reason)
-            return true
-        end
-
-        addInventoryItem = function(src, name, count)
-
-            local Player = getPlayer(src)
-            if not Player then
-                return false
-            end
-
-            Player.addInventoryItem(name, count)
-
-            return true
-        end
-
-        removeInventoryItem = function(src, name, count)
-
-            local Player = getPlayer(src)
-            if not Player then
-                return false
-            end
-
-            Player.removeInventoryItem(name, count)
-
-            return true
-        end
-
-        getInventoryItemCount = function(src, name)
-
-            local Player = getPlayer(src)
-            if not Player then
-                return false
-            end
-
-            local item = Player.getInventoryItem(name)
-            if not item then 
-                return 0
-            end
-
-            return item.count
-        end
-
-        getPlayerGroup = function(src)
-            local Player = getPlayer(src)
-            if not Player then
-                return false
-            end
-
-            return Player.getGroup()
-        end
-
-    elseif GetResourceState('ox_core') == 'started' then
-
-        GetPlayers = function()
-            return Ox.GetPlayers()
-        end
-
-        getPlayer = function(id)
-            return Ox.GetPlayer(id)
-        end
-        
-        getIdentifier = function(src)
-            local Player = getPlayer(src)
-            if Player then
-                return Player.identifier
-            else
-                return nil
-            end
-        end
-
-        getPlayerName = function(src)
-            local player = getPlayer(src)
-            if not player then return GetPlayerName(src) or '' end
-            local first = player.state and (player.state.firstName or player.state.get and player.state.get('firstName'))
-            local last = player.state and (player.state.lastName or player.state.get and player.state.get('lastName'))
-            if first and last then return (tostring(first) .. ' ' .. tostring(last)):gsub('^%s+', ''):gsub('%s+$', '') end
-            return GetPlayerName(src) or ''
-        end
-
-        getPlayerJob = function(src)
-            local player = getPlayer(src)
-            return player.getGroup()
-        end
-
-        getMoney = function(src, mtype)
-            if mtype == 'cash' then
-                return exports.ox_inventory:GetItemCount(src, 'money')
-            else
-                return exports.ox_inventory:GetItemCount(src, 'money')
-            end
-        end
-
-        addMoney = function(src, amount, mtype)
-            if mtype == 'cash' then
-                return exports.ox_inventory:AddItem(src, 'money', amount)
-            else
-                return
-            end
-        end
-        
-        removeMoney = function(src, amount, mtype)
-            if mtype == 'cash' then
-                return exports.ox_inventory:RemoveItem(src, 'money', amount)
-            else
-                return
-            end
-        end
-
-        addInventoryItem = function(src, name, count)
-            exports.ox_inventory:AddItem(src, name, count)
-            return true
-        end
-
-        removeInventoryItem = function(src, name, count)
-            exports.ox_inventory:RemoveItem(src, name, count)
-            return true
-        end
-
-        getInventoryItemCount = function(src, name)
-            local total = 0
-            local items = exports.ox_inventory:GetInventoryItems(src)
-        
-            if not items then return 0 end
-        
-            for _, item in pairs(items) do
-                if item.name == name then
-                    total = total + (item.count or 0)
-                end
-            end
-        
-            return total
-        end
-
-        getPlayerGroup = function(src)
-            local player = getPlayer(src)
-            return  player:getGroup()
-        end
-
-    elseif GetResourceState('qb-core') == 'started' then
-
-        local QBCore = exports['qb-core']:GetCoreObject()
-
-        getPlayers = function()
-            return QBCore.Functions.GetPlayers()
-        end
-
-        getPlayer = function(src)
-            return QBCore.Functions.GetPlayer(src)
-        end
-
-        getIdentifier = function(src)
-            local Player = getPlayer(src)
-            if Player then
-                return Player.PlayerData.citizenid
-            else
-                return nil
-            end
-        end
-
-        getPlayerName = function(src)
-            local Player = getPlayer(src)
-            if not Player or not Player.PlayerData or not Player.PlayerData.charinfo then return GetPlayerName(src) or '' end
-            local c = Player.PlayerData.charinfo
-            local first = c.firstname or c.firstName
-            local last = c.lastname or c.lastName
-            if first and last then return (tostring(first) .. ' ' .. tostring(last)):gsub('^%s+', ''):gsub('%s+$', '') end
-            return GetPlayerName(src) or ''
-        end
-
-        getPlayerJob = function(src)
-            local player = getPlayer(src)
-            return player.PlayerData.job.name, player.PlayerData.job.grade.level
-        end
-
-        getMoney = function(src, mtype)
-            local player = getPlayer(src)
-            if not player then return end
-            return player.PlayerData.money[mtype]
-        end
-
-        addMoney = function(src, amount, mtype, reason)
-            local player = getPlayer(src)
-            if not player then return end
-
-            return player.Functions.AddMoney(mtype, amount, reason or "unknown")
-        end
-
-        removeMoney = function(src, amount, mtype, reason)
-            local player = getPlayer(src)
-            if not player then return end
-
-            if player.PlayerData.money[mtype] < amount then
-                return
-            end
-
-            return player.Functions.RemoveMoney(mtype, amount, reason or "unknown")
-        end
-
-        addInventoryItem = function(src, name, count)
-            exports['qb-inventory']:AddItem(src, name, count, false, false, 'Add inventory item')
-            return true
-        end
-
-        removeInventoryItem = function(src, name, count)
-            exports['qb-inventory']:RemoveItem(src, name, count, false, 'Remove inventory item')
-            return true
-        end
-
-        getInventoryItemCount = function(src, name)
-            local Player = getPlayer(src)
-            if not Player then
-                return 0
-            end
-            
-            local item = Player.Functions.GetItemByName(name)
-            if not item then 
-                return 0
-            end
-
-            return item.amount
-        end
-
-        getPlayerGroup = function(src)
-            local Player = getPlayer(src)
-            if not Player then
-                return false
-            end
-
-            return Player.PlayerData.group
-        end
-        
-    end
-else
+    local convertMoney = {
+        ["cash"] = "money",
+        ["bank"] = "bank",
+        ["black"] = "black_money"
+    }
 
     GetPlayers = function()
-        return --
+        return ESX.GetPlayers()
     end
 
     getPlayer = function(src)
-        return --
+        return ESX.GetPlayerFromId(src)
     end
 
     getIdentifier = function(src)
-        return --
+        local Player = getPlayer(src)
+        if Player then
+            return Player.identifier
+        else
+            return nil
+        end
     end
 
     getPlayerName = function(src)
+        local Player = getPlayer(src)
+        if not Player then return GetPlayerName(src) or '' end
+        local first = (Player.get and Player.get('firstName')) or (Player.PlayerData and Player.PlayerData.firstName)
+        local last = (Player.get and Player.get('lastName')) or (Player.PlayerData and Player.PlayerData.lastName)
+        if first and last then return (tostring(first) .. ' ' .. tostring(last)):gsub('^%s+', ''):gsub('%s+$', '') end
         return GetPlayerName(src) or ''
     end
 
     getPlayerJob = function(src)
-        return --
+        local Player = getPlayer(src)
+        if not Player then return nil end
+        return Player.job.name, Player.job.grade
     end
 
     getMoney = function(src, mtype)
-        return --
+        local Player = getPlayer(src)
+        if not Player then return end
+        mtype = convertMoney[mtype] or mtype
+        local account = Player.getAccount(mtype)
+        if not account then
+            print('[ESX] Account missing, add ESX accounts for the script to work properly')
+            return 0
+        end
+        return account.money
+    end
+
+    addMoney = function(src, amount, mtype, reason)
+        local mtype = convertMoney[mtype] or mtype
+        local Player = getPlayer(src)
+        if not Player then return false end
+        Player.addAccountMoney(mtype, amount, reason)
+        return true
     end
 
     removeMoney = function(src, amount, mtype, reason)
-        return --
+        local mtype = convertMoney[mtype] or mtype
+        local Player = getPlayer(src)
+        if not Player then return false end
+        local account = Player.getAccount(mtype)
+        if not account or account.money < amount then
+            return false
+        end
+        Player.removeAccountMoney(mtype, amount, reason)
+        return true
+    end
+
+    addInventoryItem = function(src, name, count)
+        local Player = getPlayer(src)
+        if not Player then return false end
+        Player.addInventoryItem(name, count)
+        return true
+    end
+
+    removeInventoryItem = function(src, name, count)
+        local Player = getPlayer(src)
+        if not Player then return false end
+        Player.removeInventoryItem(name, count)
+        return true
+    end
+
+    getInventoryItemCount = function(src, name)
+        local Player = getPlayer(src)
+        if not Player then return 0 end
+        local item = Player.getInventoryItem(name)
+        if not item then return 0 end
+        return item.count
+    end
+
+    getPlayerGroup = function(src)
+        local Player = getPlayer(src)
+        if not Player then return false end
+        return Player.getGroup()
+    end
+
+elseif FRAMEWORK == 'qb' then
+
+    -- Resolve the QBCore object defensively so neither a missing qb-core
+    -- nor qbx_core's compatibility shim crashes this file on load.
+    local QBCore
+    if GetResourceState('qb-core') == 'started' then
+        pcall(function() QBCore = exports['qb-core']:GetCoreObject() end)
+    end
+    if not QBCore and GetResourceState('qbx_core') == 'started' then
+        pcall(function() QBCore = exports.qbx_core:GetCoreObject() end)
+    end
+
+    GetPlayers = function()
+        return QBCore.Functions.GetPlayers()
+    end
+
+    getPlayer = function(src)
+        return QBCore.Functions.GetPlayer(src)
+    end
+
+    getIdentifier = function(src)
+        local Player = getPlayer(src)
+        if Player then
+            return Player.PlayerData.citizenid
+        else
+            return nil
+        end
+    end
+
+    getPlayerName = function(src)
+        local Player = getPlayer(src)
+        if not Player or not Player.PlayerData or not Player.PlayerData.charinfo then return GetPlayerName(src) or '' end
+        local c = Player.PlayerData.charinfo
+        local first = c.firstname or c.firstName
+        local last = c.lastname or c.lastName
+        if first and last then return (tostring(first) .. ' ' .. tostring(last)):gsub('^%s+', ''):gsub('%s+$', '') end
+        return GetPlayerName(src) or ''
+    end
+
+    getPlayerJob = function(src)
+        local player = getPlayer(src)
+        if not player then return nil end
+        local job = player.PlayerData.job
+        -- qb grade is a table { level = n }, qbx may expose grade directly.
+        local grade = type(job.grade) == 'table' and job.grade.level or job.grade
+        return job.name, grade
+    end
+
+    getMoney = function(src, mtype)
+        local player = getPlayer(src)
+        if not player then return end
+        return player.PlayerData.money[mtype]
+    end
+
+    addMoney = function(src, amount, mtype, reason)
+        local player = getPlayer(src)
+        if not player then return end
+        return player.Functions.AddMoney(mtype, amount, reason or "unknown")
+    end
+
+    removeMoney = function(src, amount, mtype, reason)
+        local player = getPlayer(src)
+        if not player then return end
+        if player.PlayerData.money[mtype] < amount then
+            return
+        end
+        return player.Functions.RemoveMoney(mtype, amount, reason or "unknown")
+    end
+
+    -- Item helpers work across every qb-core version and inventory fork that
+    -- keeps the framework's Player.Functions API (qb-inventory, ps-inventory,
+    -- lj-inventory, mf-inventory, ij-inventory, jacksam-inventory, codem...).
+    -- Falls back to qb-inventory exports when Player.Functions is unavailable.
+    addInventoryItem = function(src, name, count)
+        local Player = getPlayer(src)
+        if Player and Player.Functions and Player.Functions.AddItem then
+            Player.Functions.AddItem(name, count)
+            return true
+        elseif GetResourceState('qb-inventory') == 'started' then
+            exports['qb-inventory']:AddItem(src, name, count, false, false, 'koja-lib')
+            return true
+        end
+        return false
+    end
+
+    removeInventoryItem = function(src, name, count)
+        local Player = getPlayer(src)
+        if Player and Player.Functions and Player.Functions.RemoveItem then
+            Player.Functions.RemoveItem(name, count)
+            return true
+        elseif GetResourceState('qb-inventory') == 'started' then
+            exports['qb-inventory']:RemoveItem(src, name, count, false, 'koja-lib')
+            return true
+        end
+        return false
+    end
+
+    getInventoryItemCount = function(src, name)
+        local Player = getPlayer(src)
+        if not Player then return 0 end
+        local item = Player.Functions.GetItemByName(name)
+        if not item then return 0 end
+        return item.amount or item.count or 0
+    end
+
+    getPlayerGroup = function(src)
+        local Player = getPlayer(src)
+        if not Player then return false end
+        return Player.PlayerData.group
+    end
+
+else
+
+    -- Custom framework: implementations live in editable/custom/framework_server.lua
+    -- (CustomFramework.Server). Item helpers defer to CustomInventory.Server so
+    -- the inventory bridge's framework-fallback still works.
+    local function CF()
+        return CustomFramework and CustomFramework.Server or {}
+    end
+
+    GetPlayers = function()
+        local fn = CF().GetPlayers
+        return fn and fn() or {}
+    end
+
+    getPlayer = function(src)
+        local fn = CF().GetPlayer
+        return fn and fn(src) or nil
+    end
+
+    getIdentifier = function(src)
+        local fn = CF().GetIdentifier
+        return fn and fn(src) or nil
+    end
+
+    getPlayerName = function(src)
+        local fn = CF().GetPlayerName
+        return fn and fn(src) or (GetPlayerName(src) or '')
+    end
+
+    getPlayerJob = function(src)
+        local fn = CF().GetPlayerJob
+        if fn then return fn(src) end
+        return nil
+    end
+
+    getPlayerGroup = function(src)
+        local fn = CF().GetPlayerGroup
+        return fn and fn(src) or nil
+    end
+
+    getMoney = function(src, mtype)
+        local fn = CF().GetMoney
+        return fn and fn(src, mtype) or 0
+    end
+
+    addMoney = function(src, amount, mtype, reason)
+        local fn = CF().AddMoney
+        return fn and fn(src, amount, mtype, reason) or false
+    end
+
+    removeMoney = function(src, amount, mtype, reason)
+        local fn = CF().RemoveMoney
+        return fn and fn(src, amount, mtype, reason) or false
+    end
+
+    addInventoryItem = function(src, name, count)
+        local inv = CustomInventory and CustomInventory.Server
+        if inv and inv.AddItem then return inv.AddItem(src, name, count) end
+        return false
+    end
+
+    removeInventoryItem = function(src, name, count)
+        local inv = CustomInventory and CustomInventory.Server
+        if inv and inv.RemoveItem then return inv.RemoveItem(src, name, count) end
+        return false
+    end
+
+    getInventoryItemCount = function(src, name)
+        local inv = CustomInventory and CustomInventory.Server
+        if inv and inv.GetItemCount then return inv.GetItemCount(src, name) end
+        return 0
     end
 
 end
 
-local resourceName = GetCurrentResourceName()
-local manifestFile = 'fxmanifest.lua'
-
-isResourceStarted = function(name)
-    return GetResourceState(name) == 'started'
-end
-
-ensureEntries = function(lines, useOx, useESX)
-    local hasOx, hasESX = false, false
-    local insertIdx
-
-    for idx, line in ipairs(lines) do
-        if line:match("^%s*shared_scripts%s*{") then
-            insertIdx = idx + 1
-        end
-        if line:match("[\"']@ox_core/lib/init%.lua[\"']") then
-            hasOx = true
-        end
-        if line:match("[\"']@es_extended/imports%.lua[\"']") then
-            hasESX = true
-        end
-    end
-
-    if insertIdx then
-        if not hasOx then
-            local prefix = useOx and "" or "-- "
-            table.insert(lines, insertIdx, prefix .. "'@ox_core/lib/init.lua',")
-        end
-        if not hasESX then
-            local prefix = useESX and "" or "-- "
-            table.insert(lines, insertIdx + (hasOx and 1 or 0), prefix .. "'@es_extended/imports.lua',")
-        end
-    end
-
-    return lines
-end
+----------------------------------------------------------------------
+-- Manifest auto-management: keeps @es_extended/imports.lua in shared_scripts
+-- only when es_extended is running, so non-ESX servers don't load it.
+----------------------------------------------------------------------
 
 local resourceName = GetCurrentResourceName()
 local manifestFile = 'fxmanifest.lua'
@@ -390,10 +307,7 @@ processManifest = function()
         return
     end
 
-    local useOx  = isResourceStarted('ox_core')
     local useESX = isResourceStarted('es_extended')
-
-    print(useOx and '> ox_core detected — ensuring init.lua entry' or '> ox_core not detected — removing init.lua entry')
     print(useESX and '> es_extended detected — ensuring imports.lua entry' or '> es_extended not detected — removing imports.lua entry')
 
     local lines = {}
@@ -416,6 +330,7 @@ processManifest = function()
         return
     end
 
+    -- Keep every line except the managed framework imports.
     local existing = {}
     for i = startIdx + 1, endIdx - 1 do
         local l = lines[i]
@@ -424,18 +339,14 @@ processManifest = function()
         end
     end
 
-    local desired = {}
-    if useOx  then desired[#desired+1] = "    '@ox_core/lib/init.lua'," end
-    if useESX then desired[#desired+1] = "    '@es_extended/imports.lua'," end
+    local newBlock = {}
+    if useESX then newBlock[#newBlock+1] = "    '@es_extended/imports.lua'," end
+    for _, v in ipairs(existing) do newBlock[#newBlock+1] = v end
 
     local currentBlock = {}
     for i = startIdx + 1, endIdx - 1 do
         currentBlock[#currentBlock+1] = lines[i]
     end
-
-    local newBlock = {}
-    for _, v in ipairs(desired)   do newBlock[#newBlock+1] = v end
-    for _, v in ipairs(existing)  do newBlock[#newBlock+1] = v end
 
     local unchanged = #currentBlock == #newBlock
     if unchanged then
@@ -454,7 +365,7 @@ processManifest = function()
 
     local updated = {}
     for i = 1, startIdx do updated[#updated+1] = lines[i] end
-    for _, v in ipairs(newBlock)  do updated[#updated+1] = v end
+    for _, v in ipairs(newBlock) do updated[#updated+1] = v end
     updated[#updated+1] = lines[endIdx]
     for i = endIdx + 1, #lines do updated[#updated+1] = lines[i] end
 

@@ -52,6 +52,32 @@ Head over to the **[full documentation](https://docs.kojascripts.eu/)** for inst
 
 Need help or want to follow updates? Join the **[Discord](https://discord.gg/kojascripts)** — support tickets are open there.
 
+## Bridge functions (v2)
+
+Everything is available through `KOJA = exports['koja-lib']:getSharedObject()` (or `@koja-lib/init.lua`). All integrations are optional and wrapped in `pcall`; defaults live in `editable/shared/config.lua` (`Config.Inventory`, `Config.Banking`, `Config.Target`, ...). Inventory detection is shared with the inventory bridge (`Config.Inventory`, `editable/shared/inventory.lua`).
+
+**Server**
+- Jobs: `GetJobInfo`, `SetJob`, `SetOfflineJob`, `SetJobDuty`, `GetJobs`, `GetSourceByIdentifier`, `GetGender`, `IsAdmin(src, groups, ace, identifiers)`
+- Items: `addInventoryItem(src, name, count, metadata)`, `removeInventoryItem(src, name, count, metadata, slot)`, `CanCarryItem`, `GetItemsByName`, `GetItemList`, `GetItemLabel`, `GetItemImage`, `RegisterUsableItem(name, fn(src, item, metadata, slot))`
+- Stash: `RegisterStash` (optional `opts.clientOpen = true` to allow `KOJA.Client.OpenStash`; default server-side opening only), `OpenStash`, `AddStashItem`, `RemoveStashItem`, `GetStashItems`, `GetStashItemCount`
+- Other: `SyncSocietyBalance(account, balance)`, `GiveVehicleKeys(src, plate, netId)`
+- `LogMessage(data, hook)` accepts a raw https url as `hook`, `data.fields` and `data.color`
+
+**Client**
+- `AwaitServerCallback(key, payload, timeoutMs)` (request-id based, nil on timeout)
+- `Progress(data)` (blocking, returns bool), `ShowTextUI(data)`, `HideTextUI()`
+- `RequestModel`, `RequestAnimDict`, `GetVehicleProperties`, `SetVehicleProperties`, `GetClosestVehicle`, `SetFuel`, `GiveVehicleKeys`, `GetGender`
+- `Target.Name`, `Target.GetName()`, `Target.AddSphere/AddBox/Remove/AddLocalEntity/RemoveLocalEntity`
+- `Clothing.GetAppearance/ApplyOutfit/RestoreCivilian`
+- `OpenStash(id)`
+- `Sound.Available/PlayUrlPos/SetVolume/SetDistance/SetPosition/SetTimeStamp/Stop/Exists`
+
+**Usable items with ox_inventory:** the item needs to be usable (`consume = 0` in the item definition) so ox fires `ox_inventory:usedItem`, or use `server = { export = 'koja-lib.useItem' }`.
+
+**Custom framework / inventory:** the v2 helpers have optional override hooks in `editable/custom/framework_server.lua` (`GetJobInfo`, `SetJob`, `SetOfflineJob`, `SetJobDuty`, `GetJobs`, `GetSourceByIdentifier`, `GetGender`, `IsGroupAdmin`, `RegisterUsableItem`) and `editable/custom/inventory_server.lua` (`CanCarryItem`, `GetItemsByName`, `GetItemList`, optional stash hooks `RegisterStash` / `OpenStash` / `AddStashItem` / `RemoveStashItem` / `GetStashItems`).
+
+**Sound:** `KOJA.Client.Sound.*` uses xsound when it is running and falls back to the built-in NUI sound player otherwise.
+
 ---
 
 <sub>Made by Koja Scripts</sub>

@@ -1,7 +1,7 @@
 fx_version 'cerulean'
 name 'koja-lib'
 author 'Koja Scripts'
-version '1.1.0'
+version '1.2.0'
 description 'Library to scripts'
 use_fxv2_oal 'true'
 lua54 'yes'

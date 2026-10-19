@@ -72,4 +72,65 @@ CustomFramework.Server = {
     RemoveMoney = function(src, amount, mtype, reason)
         return false
     end,
+    -- Bridge v2 hooks (optional): jobs, identity, admin, usable items ------------------
+
+    ---@param src number
+    ---@return table|nil # { name, label, grade, gradeLabel, onDuty }
+    GetJobInfo = function(src)
+        return nil
+    end,
+
+    ---@param src number
+    ---@param job string
+    ---@param grade number
+    ---@return boolean
+    SetJob = function(src, job, grade)
+        return false
+    end,
+
+    ---@param identifier string
+    ---@param job string
+    ---@param grade number
+    ---@return boolean
+    SetOfflineJob = function(identifier, job, grade)
+        return false
+    end,
+
+    ---@param src number
+    ---@param state boolean
+    ---@return boolean
+    SetJobDuty = function(src, state)
+        return false
+    end,
+
+    ---@return table # { [name] = { label = '', grades = { [grade] = { label = '' } } } }
+    GetJobs = function()
+        return {}
+    end,
+
+    ---@param identifier string
+    ---@return number|nil # Online player id
+    GetSourceByIdentifier = function(identifier)
+        return nil
+    end,
+
+    ---@param src number
+    ---@return string|nil # 'male' | 'female'
+    GetGender = function(src)
+        return nil
+    end,
+
+    ---@param src number
+    ---@param groups table # Array of group names considered admin
+    ---@return boolean
+    IsGroupAdmin = function(src, groups)
+        return false
+    end,
+
+    ---@param name string # Item name
+    ---@param handler function # Call handler(src, data) when the item is used
+    ---@return boolean # Whether the registration succeeded
+    RegisterUsableItem = function(name, handler)
+        return false
+    end,
 }

@@ -13,7 +13,10 @@ KOJA.Client.SendNotify = function(data)
     if backend == "esx" and ESX then
         ESX.ShowNotification(data.desc)
     elseif backend == "qb" and QBCore then
-        QBCore.Functions.Notify(data.desc, data.type or "success")
+        -- QBCore only knows primary / success / error, map the rest to primary.
+        local qbTypes = { info = 'primary', warning = 'primary', question = 'primary' }
+        local nType = data.type or "success"
+        QBCore.Functions.Notify(data.desc or data.title, qbTypes[nType] or nType, data.time)
     elseif backend == 'ox' and GetResourceState('ox_lib') == 'started' then
         lib.notify({
             title = data.title,

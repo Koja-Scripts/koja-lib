@@ -187,6 +187,10 @@ KOJA.Server.addInventoryItem = function(source, name, count, metadata, slot)
             return ok
         end
     end
+    -- Metadata-aware native path (qb-inventory exports / framework hooks); plain adds keep the framework call.
+    if metadata ~= nil then
+        return KOJA.Server.Inv.NativeAdd(source, name, count, metadata)
+    end
     return addInventoryItem(source, name, count)
 end
 
@@ -203,6 +207,9 @@ KOJA.Server.removeInventoryItem = function(source, name, count, metadata, slot)
         if ok ~= nil then
             return ok
         end
+    end
+    if metadata ~= nil or slot ~= nil then
+        return KOJA.Server.Inv.NativeRemove(source, name, count, metadata, slot)
     end
     return removeInventoryItem(source, name, count)
 end

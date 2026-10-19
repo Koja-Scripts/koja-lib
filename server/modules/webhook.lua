@@ -1,8 +1,15 @@
 webhook = function(embed, hook)
-    if KOJA.Server.Webhooks[hook] then
-        PerformHttpRequest(KOJA.Server.Webhooks[hook], function(err, text, headers) end, 'POST', json.encode({embeds = {embed}}), {['Content-Type'] = 'application/json'})
+    local url
+    if type(hook) == 'string' and hook:sub(1, 4) == 'http' then
+        url = hook
     else
-        print('[^2koja-lib^7] Webhook to ^1'..hook..'^7 does not exist!')
+        url = KOJA.Server.Webhooks[hook]
+    end
+
+    if url and url ~= '' then
+        PerformHttpRequest(url, function(err, text, headers) end, 'POST', json.encode({embeds = {embed}}), {['Content-Type'] = 'application/json'})
+    else
+        print('[^2koja-lib^7] Webhook to ^1'..tostring(hook)..'^7 does not exist!')
     end
 end
 
@@ -11,7 +18,8 @@ KOJA.Server.LogMessage = function(data, hook)
     local embed = {
         title = data.title,
         description = logMessage,
-        color = 65280,
+        color = data.color or 65280,
+        fields = data.fields,
         footer = {
             text = data.footertext,
         },

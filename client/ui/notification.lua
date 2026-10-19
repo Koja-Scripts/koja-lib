@@ -12,7 +12,11 @@ KOJA.Client.LibNotify = function(data)
         description = data.description or data.desc or 'Wiadomość',
         color = colors[data.type] or '#ffffff',
         type = data.type or 'info',
-        duration = data.duration or data.time or 5,
+        duration = (function()
+            local value = tonumber(data.duration or data.time) or 5
+            if value > 100 then value = value / 1000 end
+            return value
+        end)(),
         position = data.position or 'top'
     })
 end

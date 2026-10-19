@@ -13,13 +13,20 @@ KOJA.Server.SendNotify = function(data)
     if backend == "esx" then
         TriggerClientEvent("esx:ShowNotification", data.source, data.desc)
     elseif backend == "qb" then
-        TriggerClientEvent("QBCore:Notify", data.source, data.desc or data.title, data.type or "primary")
+        -- QBCore only knows primary / success / error, map the rest to primary.
+        local qbTypes = { info = 'primary', warning = 'primary', question = 'primary' }
+        local nType = data.type or "primary"
+        TriggerClientEvent("QBCore:Notify", data.source, data.desc or data.title, qbTypes[nType] or nType, data.time)
     elseif backend == 'ox' then
         TriggerClientEvent('ox_lib:notify', data.source, {
             title = data.title,
             description = data.desc,
             type = data.type or 'inform',
             duration = data.time or 5000
+        })
+    elseif backend == 'lib' then
+        TriggerClientEvent('koja-lib:nui:createNotification', data.source, {
+            label = data.title, description = data.desc, type = data.type, duration = data.time,
         })
     else
         Misc.Utils.customNotify(data)

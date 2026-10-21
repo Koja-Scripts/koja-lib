@@ -46,6 +46,17 @@ KOJA.Client.points.new({
 
 ---
 
+## Download
+
+Grab the ready-to-use build from the **[latest release](https://github.com/Koja-Scripts/koja-lib/releases/latest/download/koja-lib.zip)** — the UI is already built, just extract it into `resources/` and `ensure koja-lib`.
+
+Don't use *Code → Download ZIP* / *Source code (zip)* — that's the raw source without the built UI (`web/build`).
+
+### Publishing a release (maintainers)
+
+1. Bump `version` in `fxmanifest.lua` and push to `main`.
+2. Either push a matching tag (`git tag v1.2.1 && git push origin v1.2.1`) or run the **Release** workflow manually from the Actions tab — it builds the NUI, packages `koja-lib.zip` and publishes the release.
+
 ## Getting started
 
 Head over to the **[full documentation](https://docs.kojascripts.eu/)** for installation, configuration, and the complete API reference.

@@ -4,9 +4,10 @@
 KOJA.Client.GetPlayerJob = function()
     local framework = KOJA.Framework
     if framework == "esx" then
-        return ESX.PlayerData.job.name
+        return ESX.PlayerData.job and ESX.PlayerData.job.name
     elseif framework == "qb" then
-        return QBCore.Functions.GetPlayerData().job.name
+        local job = QBCore.Functions.GetPlayerData().job
+        return job and job.name
     elseif framework == "custom" then
         local fn = CustomFramework and CustomFramework.Client and CustomFramework.Client.GetPlayerJob
         return fn and fn() or nil
@@ -17,9 +18,10 @@ end
 KOJA.Client.GetPlayerJobLabel = function()
     local framework = KOJA.Framework
     if framework == "esx" then
-        return ESX.PlayerData.job.label
+        return ESX.PlayerData.job and ESX.PlayerData.job.label
     elseif framework == "qb" then
-        return QBCore.Functions.GetPlayerData().job.label
+        local job = QBCore.Functions.GetPlayerData().job
+        return job and job.label
     elseif framework == "custom" then
         local fn = CustomFramework and CustomFramework.Client and CustomFramework.Client.GetPlayerJobLabel
         return fn and fn() or nil

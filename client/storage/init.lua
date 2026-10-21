@@ -6,13 +6,15 @@ storage = setmetatable({
     resource = GetCurrentResourceName()
 }, {
     __index = function(self, key)
-        storageEvents[key] = {}
+        if not storageEvents[key] then
+            storageEvents[key] = {}
 
-        AddEventHandler(('koja-lib:update:%s'):format(key), function(value)
-            local oldValue = self[key]
-            TriggerEvent("koja-lib:callback_triggered", key, value, oldValue)
-            self[key] = value
-        end)
+            AddEventHandler(('koja-lib:update:%s'):format(key), function(value)
+                local oldValue = rawget(self, key)
+                TriggerEvent("koja-lib:callback_triggered", key, value, oldValue)
+                rawset(self, key, value)
+            end)
+        end
 
         return rawset(self, key, storageData[key] or false)[key]
     end,
@@ -33,9 +35,8 @@ storage = setmetatable({
     end
 })
 
-RegisterNetEvent("koja-lib:callback_triggered")
 AddEventHandler("koja-lib:callback_triggered", function(key, value, oldValue)
-    for i, callback in ipairs(storageEvents[key]) do
+    for i, callback in ipairs(storageEvents[key] or {}) do
         CreateThread(function()
             if Config.Debug then
                 KOJA.Client.Print(5, true, "[koja-lib] EXECUTING CALLBACK ["..i.."] FROM EVENT FOR '" .. key .. "'")

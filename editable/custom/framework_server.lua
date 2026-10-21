@@ -15,7 +15,7 @@ CustomFramework.Server = {
 
     ---@return table # Array of online player ids
     GetPlayers = function()
-        return GetPlayers()
+        return nil -- nil = fall back to the native player list
     end,
 
     ---@param src number

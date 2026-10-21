@@ -80,16 +80,16 @@ Adapters['ox_inventory'] = {
 --      HasItem(src, items, amount) -> boolean
 Adapters['codem-inventory'] = {
     AddItem = function(src, name, count, metadata, slot)
-        local ok = safeCall(function()
+        local ok, res = pcall(function()
             return exports['codem-inventory']:AddItem(src, name, count, slot, metadata)
         end)
-        return ok ~= false
+        return ok and res ~= false
     end,
     RemoveItem = function(src, name, count, metadata, slot)
-        local ok = safeCall(function()
+        local ok, res = pcall(function()
             return exports['codem-inventory']:RemoveItem(src, name, count, slot)
         end)
-        return ok ~= false
+        return ok and res ~= false
     end,
     GetItemCount = function(src, name)
         local count = safeCall(function()

@@ -141,6 +141,9 @@ local function fuelName()
     return 'native'
 end
 
+---@return string # Fuel resource in use ('ox_fuel', 'LegacyFuel', ... or 'native')
+KOJA.Client.GetFuelResource = fuelName
+
 ---@param vehicle number # Vehicle entity
 ---@param level number # 0 - 100
 ---@return boolean

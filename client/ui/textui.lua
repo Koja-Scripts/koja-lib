@@ -2,13 +2,18 @@ local isOpen = false
 local currentTextUI = nil
 
 showTextUI = function(data)
-    if currentTextUI == data.desc and currentTextUI.key == data.key then
-        return 
+    local key = data.key or 'E'
+    local label = data.label or 'Action'
+    local description = data.desc or data.description or 'Press to perform action'
+
+    if currentTextUI and currentTextUI.key == key and currentTextUI.label == label and currentTextUI.description == description then
+        return
     end
+
     local textUIData = {
-        key = data.key or 'E',
-        label = data.label or 'Action',
-        description = data.desc or 'Press to perform action',
+        key = key,
+        label = label,
+        description = description,
         theme = Config.UI.TextUI.theme,
         bottomOffset = Config.UI.TextUI.bottomOffset
     }

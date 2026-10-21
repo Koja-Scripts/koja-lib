@@ -2,8 +2,8 @@ KOJA.Server.RegisterServerCallback("koja-lib:HasLicense", function(source, licen
     local framework = KOJA.Framework
 
     if framework == 'esx' then
-        TriggerEvent('esx_license:getLicense', source, licenseName, function(has)
-            cb(has)
+        TriggerEvent('esx_license:checkLicense', source, licenseName, function(has)
+            cb(has == true)
         end)
     elseif framework == 'qb' then
         local ply = KOJA.Server.GetPlayerBySource(source)

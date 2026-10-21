@@ -47,7 +47,7 @@ if Config.Laser.enable then
                     DrawMarker(28, coords.x, coords.y, coords.z, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 0.1, 0.1, 0.1, color.r, color.g, color.b, color.a, false, true, 2, nil, nil, false)
                     local heading = GetEntityHeading(PlayerPedId())
                     local reverseHeading = (heading + 180.0) % 360.0
-                    print(("Coords: x = %.2f, y = %.2f, z = %.2f, h = %.2f, reverseH = %.2f"):format(coords.x, coords.y, coords.z, heading, reverseHeading))
+                    if IsControlJustPressed(0, 38) then print(("Coords: x = %.2f, y = %.2f, z = %.2f, h = %.2f, reverseH = %.2f"):format(coords.x, coords.y, coords.z, heading, reverseHeading)) end
                 end
 
                 if IsDisabledControlJustReleased(0, 200) or IsDisabledControlJustReleased(0, 73) then

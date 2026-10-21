@@ -18,7 +18,7 @@ KOJA.Client.SendNotify = function(data)
         local nType = data.type or "success"
         QBCore.Functions.Notify(data.desc or data.title, qbTypes[nType] or nType, data.time)
     elseif backend == 'ox' and GetResourceState('ox_lib') == 'started' then
-        lib.notify({
+        TriggerEvent('ox_lib:notify', {
             title = data.title,
             description = data.desc,
             type = data.type or 'success',
@@ -41,7 +41,7 @@ KOJA.Client.ShowFreemodeMessage = function(data)
         QBCore.Functions.Notify(data.desc, data.type or "success")
 
     elseif backend == 'ox' and GetResourceState('ox_lib') == 'started' then
-        lib.notify({
+        TriggerEvent('ox_lib:notify', {
             title = data.title,
             description = data.desc,
             type = data.type or 'success'

@@ -9,12 +9,12 @@ end
 
 KOJA.Server.GeneratePlate = function()
     local generatedPlate
+    local plateTable = KOJA.Framework == 'qb' and 'player_vehicles' or 'owned_vehicles'
 
-    while true do
-        Citizen.Wait(0)
+    for _ = 1, 50 do
         generatedPlate = string.upper(KOJA.Server.GetRandomString(Config.SaveVehicleConfig.Letters, Config.SaveVehicleConfig.Charset)..Config.SaveVehicleConfig.Separator..KOJA.Server.GetRandomString(Config.SaveVehicleConfig.Numbers, Config.SaveVehicleConfig.NumberCharset))
 
-        local exists = exports.oxmysql.scalar_async('SELECT 1 FROM owned_vehicles WHERE plate = ?', { generatedPlate })
+        local exists = MySQL.scalar.await(('SELECT 1 FROM %s WHERE plate = ?'):format(plateTable), { generatedPlate })
 
         if not exists then
             break
@@ -26,9 +26,9 @@ end
 exports('GeneratePlate', KOJA.Server.GeneratePlate)
 
 KOJA.Server.SaveVehicleToGarage = function(data)
-    local xPlayer = data.player
+    local src = data.source or (data.player and (data.player.source or (data.player.PlayerData and data.player.PlayerData.source)))
     if KOJA.Framework == 'esx' then
-        exports.oxmysql.insert(
+        MySQL.insert(
             'INSERT INTO owned_vehicles (owner, plate, vehicle, state) VALUES (?, ?, ?, ?)',
             {
                 data.identifier,
@@ -38,7 +38,7 @@ KOJA.Server.SaveVehicleToGarage = function(data)
             },
             function(rowsChanged)
                 local data = {
-                    message = string.format("**Player:** %s\n**Saved Vehicle**\n**Vehicle Model:** %s\n**License Plate:** %s\n**Price:** %s", GetPlayerName(xPlayer.source), data.vehicle.name, data.vehicle.plate, data.vehicle.price),
+                    message = string.format("**Player:** %s\n**Saved Vehicle**\n**Vehicle Model:** %s\n**License Plate:** %s\n**Price:** %s", GetPlayerName(src) or 'unknown', data.vehicle.name, data.vehicle.plate, data.vehicle.price),
                     title = 'Saved Vehicle',
                     footertext = 'koja-lib'
                 }
@@ -46,24 +46,21 @@ KOJA.Server.SaveVehicleToGarage = function(data)
             end
         )
     elseif KOJA.Framework == 'qb' then
-        exports.oxmysql.insert(
-            'INSERT INTO player_vehicles (owner, plate, vehicle, state, garage, type, jobVehicle, jobGarage, tag, impound_data, favorite) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        MySQL.insert(
+            'INSERT INTO player_vehicles (license, citizenid, vehicle, hash, mods, plate, garage, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             {
+                src and GetPlayerIdentifierByType(src, 'license') or nil,
                 data.identifier,
-                data.vehicle.plate,
+                data.vehicle.name,
+                joaat(data.vehicle.name),
                 json.encode({model = joaat(data.vehicle.name), plate = data.vehicle.plate}),
-                1,
-                'OUT',
-                'vehicle',
-                '',
-                '',
-                nil,
-                '',
-                0
+                data.vehicle.plate,
+                data.garage or 'pillboxgarage',
+                1
             },
             function(rowsChanged)
                 local data = {
-                    message = string.format("**Player:** %s\n**Saved Vehicle**\n**Vehicle Model:** %s\n**License Plate:** %s\n**Price:** %s", GetPlayerName(xPlayer.source), data.vehicle.name, data.vehicle.plate, data.vehicle.price),
+                    message = string.format("**Player:** %s\n**Saved Vehicle**\n**Vehicle Model:** %s\n**License Plate:** %s\n**Price:** %s", GetPlayerName(src) or 'unknown', data.vehicle.name, data.vehicle.plate, data.vehicle.price),
                     title = 'Saved Vehicle',
                     footertext = 'koja-lib'
                 }
@@ -71,7 +68,7 @@ KOJA.Server.SaveVehicleToGarage = function(data)
             end
         )
     else
-        exports.oxmysql.insert(
+        MySQL.insert(
             'INSERT INTO owned_vehicles (owner, plate, vehicle, state) VALUES (?, ?, ?, ?)',
             {
                 data.identifier,
@@ -81,7 +78,7 @@ KOJA.Server.SaveVehicleToGarage = function(data)
             },
             function(rowsChanged)
                 local data = {
-                    message = string.format("**Player:** %s\n**Saved Vehicle**\n**Vehicle Model:** %s\n**License Plate:** %s\n**Price:** %s", GetPlayerName(xPlayer.source), data.vehicle.name, data.vehicle.plate, data.vehicle.price),
+                    message = string.format("**Player:** %s\n**Saved Vehicle**\n**Vehicle Model:** %s\n**License Plate:** %s\n**Price:** %s", GetPlayerName(src) or 'unknown', data.vehicle.name, data.vehicle.plate, data.vehicle.price),
                     title = 'Saved Vehicle',
                     footertext = 'koja-lib'
                 }

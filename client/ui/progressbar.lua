@@ -10,7 +10,14 @@ local Keys = {
     ["NENTER"] = 201, ["N4"] = 108, ["N5"] = 60, ["N6"] = 107, ["N+"] = 96, ["N-"] = 97, ["N7"] = 117, ["N8"] = 61, ["N9"] = 118
 }
 
+local activeProgress = nil
+
 startProgressbar = function(data, callback)
+    -- Only one bar at a time: a new one cancels the previous.
+    if activeProgress then activeProgress.cancelled = true end
+    local progress = { cancelled = false }
+    activeProgress = progress
+
     local progressData = {
         label = data.label or data.title or 'Loading...',
         description = data.description or data.text or 'Please wait...',
@@ -23,21 +30,27 @@ startProgressbar = function(data, callback)
     
     local playerPed = PlayerPedId()
     local duration = (data.duration or data.time or 5000)
+    local playingAnim = false
     
     if data.animation and data.animation.dict and data.animation.name then
-        RequestAnimDict(data.animation.dict)
-        while not HasAnimDictLoaded(data.animation.dict) do
+        local dict = data.animation.dict
+        RequestAnimDict(dict)
+        local timeout = GetGameTimer() + 5000
+        while not HasAnimDictLoaded(dict) and GetGameTimer() < timeout do
             Wait(10)
         end
-        local animFlag = data.animation.flag ~= nil and data.animation.flag or 1
-        TaskPlayAnim(playerPed, data.animation.dict, data.animation.name, 8.0, -8.0, duration, animFlag, 0, false, false, false) 
+        if HasAnimDictLoaded(dict) then
+            local animFlag = data.animation.flag ~= nil and data.animation.flag or 1
+            TaskPlayAnim(playerPed, dict, data.animation.name, 8.0, -8.0, duration, animFlag, 0, false, false, false)
+            RemoveAnimDict(dict)
+            playingAnim = true
+        end
     end
     
     CreateThread(function()
         local startTime = GetGameTimer()
-        local isCanceled = false
         
-        while (GetGameTimer() - startTime) < duration do
+        while (GetGameTimer() - startTime) < duration and not progress.cancelled do
             if data.inputBlock and data.inputBlock.keys then
                 for _, key in ipairs(data.inputBlock.keys) do
                     if Keys[key] then
@@ -46,31 +59,46 @@ startProgressbar = function(data, callback)
                 end
             end
             
-            if data.cancelable and IsControlJustPressed(0, 73) then
-                isCanceled = true
+            -- X (73), also works when X is in inputBlock.keys
+            if data.cancelable and (IsControlJustPressed(0, 73) or IsDisabledControlJustPressed(0, 73)) then
+                progress.cancelled = true
                 break
             end
             
-            Wait(5)
+            Wait(0)
         end
-        
-        if isCanceled then
-            cancelProgressbar()
-            ClearPedTasks(playerPed)
-            if callback then callback(false) end
-        else
-            ClearPedTasks(playerPed)
-            if callback then callback(true) end
+
+        if activeProgress == progress then
+            activeProgress = nil
+            if progress.cancelled then
+                KOJA.Client.SendReactMessage("koja-lib:nui:hideProgressBar")
+            end
         end
+
+        if playingAnim then ClearPedTasks(playerPed) end
+        if callback then callback(not progress.cancelled) end
     end)
 end
 
 cancelProgressbar = function()
-    KOJA.Client.SendReactMessage("koja-lib:nui:hideProgressBar")
+    if activeProgress then
+        activeProgress.cancelled = true
+    else
+        KOJA.Client.SendReactMessage("koja-lib:nui:hideProgressBar")
+    end
 end
+
+---@return boolean # Whether a progress bar is currently running
+isProgressbarActive = function()
+    return activeProgress ~= nil
+end
+
+KOJA.Client.CancelProgress = cancelProgressbar
+KOJA.Client.IsProgressActive = isProgressbarActive
 
 exports("startProgressbar", function(data, cb)
     startProgressbar(data, cb)
 end)
 exports("cancelProgressbar", cancelProgressbar)
+exports("isProgressbarActive", isProgressbarActive)
 

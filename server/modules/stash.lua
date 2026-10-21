@@ -42,7 +42,7 @@ end
 ---@param slots number|nil # Slot count (default 50)
 ---@param weight number|nil # Max weight (default 100000)
 ---@param groups table|nil # ox_inventory groups { job = grade }
----@param opts table|nil # { clientOpen = true } lets clients request this stash through KOJA.Client.OpenStash (default: server side opening only)
+---@param opts table|nil # { clientOpen = true, coords = vector3, distance = 3.0 } clientOpen lets clients request this stash through KOJA.Client.OpenStash (default: server side opening only); coords/distance limit where it can be opened from
 ---@return boolean
 KOJA.Server.RegisterStash = function(id, label, slots, weight, groups, opts)
     if not id then return false end
@@ -53,6 +53,8 @@ KOJA.Server.RegisterStash = function(id, label, slots, weight, groups, opts)
         weight = tonumber(weight) or 100000,
         groups = groups,
         clientOpen = type(opts) == 'table' and opts.clientOpen == true,
+        coords = type(opts) == 'table' and opts.coords or nil,
+        distance = type(opts) == 'table' and tonumber(opts.distance) or nil,
     }
 
     if Inv.IsOx() then
@@ -75,7 +77,7 @@ local function getStashDef(id, label, slots, weight)
     id = tostring(id)
     local def = stashes[id]
     if not def or (label and label ~= def.label) or (slots and tonumber(slots) ~= def.slots) or (weight and tonumber(weight) ~= def.weight) then
-        KOJA.Server.RegisterStash(id, label or (def and def.label), slots or (def and def.slots), weight or (def and def.weight), def and def.groups, { clientOpen = def and def.clientOpen })
+        KOJA.Server.RegisterStash(id, label or (def and def.label), slots or (def and def.slots), weight or (def and def.weight), def and def.groups, { clientOpen = def and def.clientOpen, coords = def and def.coords, distance = def and def.distance })
         def = stashes[id]
     end
     return def
@@ -423,12 +425,30 @@ KOJA.Server.OpenStash = function(src, id, label, slots, weight)
     return true
 end
 
+-- Forced opening (ox forceOpenInventory / qb OpenInventory) skips the inventory's own
+-- group checks, so client requests are validated here.
+local function canClientOpen(src, def)
+    if type(def.groups) == 'table' and next(def.groups) then
+        local job = KOJA.Server.GetJobInfo(src)
+        local minGrade = def.groups[job.name]
+        if minGrade == nil or (tonumber(job.grade) or 0) < (tonumber(minGrade) or 0) then return false end
+    end
+    if def.coords then
+        local ped = GetPlayerPed(src)
+        if ped <= 0 then return false end
+        local c = def.coords
+        if #(GetEntityCoords(ped) - vector3(c.x, c.y, c.z)) > (def.distance or 3.0) then return false end
+    end
+    return true
+end
+
 -- Client requested open: only stashes registered with opts.clientOpen = true are served
 RegisterNetEvent('koja:Server:OpenStash', function(id)
     local src = source
     if type(id) ~= 'string' then return end
     local def = stashes[id]
     if not def or def.clientOpen ~= true then return end
+    if not canClientOpen(src, def) then return end
     KOJA.Server.OpenStash(src, id)
 end)
 

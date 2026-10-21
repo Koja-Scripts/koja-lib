@@ -5,8 +5,7 @@ local GetControlInstructionalButton = GetControlInstructionalButton
 
 local keybind_meta = {
     isDisabled = false,
-    isPressed = false,
-    key = '',
+    pressed = false,
     mapper = 'keyboard',
 }
 
@@ -19,7 +18,7 @@ function keybind_meta:getKey()
 end
 
 function keybind_meta:isPressed()
-    return self.isPressed
+    return self.pressed == true
 end
 
 function keybind_meta:disable(state)
@@ -31,9 +30,9 @@ function KOJA.registerKeyBind(data)
         name = data.name,
         description = data.description,
         hash = joaat('+' .. data.name) | 0x80000000,
-        isPressed = false,
+        pressed = false,
         isDisabled = false,
-        key = data.key,
+        defaultKey = data.key,
         onPress = data.onPress,
         onRelease = data.onRelease
     }
@@ -42,13 +41,14 @@ function KOJA.registerKeyBind(data)
 
     RegisterCommand('+' .. data.name, function()
         if bind.isDisabled or IsPauseMenuActive() then return end
-        bind.isPressed = true
+        bind.pressed = true
         if bind.onPress then bind.onPress() end
     end)
 
     RegisterCommand('-' .. data.name, function()
-        if bind.isDisabled or IsPauseMenuActive() then return end
-        bind.isPressed = false
+        local wasPressed = bind.pressed
+        bind.pressed = false
+        if not wasPressed or bind.isDisabled or IsPauseMenuActive() then return end
         if bind.onRelease then bind.onRelease() end
     end)
 

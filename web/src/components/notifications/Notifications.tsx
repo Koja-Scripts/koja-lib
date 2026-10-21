@@ -5,6 +5,34 @@ import { startNotificationExit, removeNotification } from '@/slices/notification
 import { Notification, NotificationType, NotificationPosition } from '@/types/notification';
 import { CircleCheck, CircleAlert, CircleX, HelpCircle } from "lucide-react";
 
+// Descriptions may contain simple formatting (<b>, <br>, coloured <span>) but come from
+// net events, so everything else (scripts, handlers, images, links) is stripped.
+const ALLOWED_TAGS = new Set(['B', 'STRONG', 'I', 'EM', 'U', 'BR', 'SPAN', 'SMALL']);
+const ALLOWED_STYLES = new Set(['color', 'font-weight', 'font-style', 'text-decoration']);
+
+const sanitizeHtml = (html: string) => {
+  const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
+  const clean = (node: Element) => {
+    for (const child of Array.from(node.children)) {
+      clean(child);
+      if (!ALLOWED_TAGS.has(child.tagName)) {
+        child.replaceWith(document.createTextNode(child.textContent || ''));
+        continue;
+      }
+      const style = (child as HTMLElement).style;
+      const kept = Array.from(style)
+        .filter((prop) => ALLOWED_STYLES.has(prop))
+        .map((prop) => `${prop}:${style.getPropertyValue(prop)}`)
+        .join(';');
+      for (const attr of Array.from(child.attributes)) child.removeAttribute(attr.name);
+      if (kept && !/url\(/i.test(kept)) child.setAttribute('style', kept);
+    }
+  };
+  const root = doc.body.firstElementChild as Element;
+  clean(root);
+  return root.innerHTML;
+};
+
 const hexToRgba = (hex: string, alpha: number) => {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -61,7 +89,7 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({ notificati
     }, notification.duration * 1000);
     
     return () => clearTimeout(timer);
-  }, [notification.id, notification.duration, dispatch]);
+  }, [notification.id, notification.duration, notification.timestamp, dispatch]);
   
   useEffect(() => {
     if (notification.isRemoving) {
@@ -113,7 +141,7 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({ notificati
         {notification.description && typeof notification.description === 'string' && (
           <div 
             className="text-[.65vw] font-light text-white/70 leading-[.9vw]"
-            dangerouslySetInnerHTML={{ __html: notification.description }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(notification.description) }}
           />
         )}
       </div>

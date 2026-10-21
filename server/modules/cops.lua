@@ -6,8 +6,8 @@ local function countCops()
     for _, entry in ipairs(players) do
         -- GetPlayers returns ids (esx/qb) or player objects depending on framework.
         local src = type(entry) == 'table' and entry.source or entry
-        local jobName = KOJA.Server.GetPlayerJob(src)
-        if jobName and Config.PoliceGroups[jobName] then
+        local job = KOJA.Server.GetJobInfo(src)
+        if job and Config.PoliceGroups[job.name] and job.onDuty ~= false then
             count = count + 1
         end
     end

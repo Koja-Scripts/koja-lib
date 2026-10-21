@@ -30,6 +30,9 @@ local offlineTables = Config.OfflineJobTables or {
 
 local FRAMEWORK = Misc.Utils.GetFramework()
 
+-- The bridge overrides the global GetPlayers below; keep the native for fallbacks.
+local NativeGetPlayers = GetPlayers
+
 if FRAMEWORK == 'esx' then
 
     local ESX = exports['es_extended']:getSharedObject()
@@ -114,6 +117,8 @@ if FRAMEWORK == 'esx' then
     removeInventoryItem = function(src, name, count)
         local Player = getPlayer(src)
         if not Player then return false end
+        local item = Player.getInventoryItem(name)
+        if not item or (item.count or 0) < count then return false end
         Player.removeInventoryItem(name, count)
         return true
     end
@@ -305,23 +310,31 @@ elseif FRAMEWORK == 'qb' then
         return job.name, grade
     end
 
+    -- Accept ESX style account names too.
+    local convertMoney = {
+        ["money"] = "cash",
+        ["black"] = "black_money",
+    }
+
     getMoney = function(src, mtype)
         local player = getPlayer(src)
         if not player then return end
-        return player.PlayerData.money[mtype]
+        return player.PlayerData.money[convertMoney[mtype] or mtype]
     end
 
     addMoney = function(src, amount, mtype, reason)
         local player = getPlayer(src)
-        if not player then return end
-        return player.Functions.AddMoney(mtype, amount, reason or "unknown")
+        if not player then return false end
+        return player.Functions.AddMoney(convertMoney[mtype] or mtype, amount, reason or "unknown")
     end
 
     removeMoney = function(src, amount, mtype, reason)
         local player = getPlayer(src)
-        if not player then return end
-        if player.PlayerData.money[mtype] < amount then
-            return
+        if not player then return false end
+        mtype = convertMoney[mtype] or mtype
+        local balance = player.PlayerData.money[mtype]
+        if type(balance) ~= 'number' or balance < amount then
+            return false
         end
         return player.Functions.RemoveMoney(mtype, amount, reason or "unknown")
     end
@@ -333,11 +346,9 @@ elseif FRAMEWORK == 'qb' then
     addInventoryItem = function(src, name, count)
         local Player = getPlayer(src)
         if Player and Player.Functions and Player.Functions.AddItem then
-            Player.Functions.AddItem(name, count)
-            return true
+            return Player.Functions.AddItem(name, count) ~= false
         elseif GetResourceState('qb-inventory') == 'started' then
-            exports['qb-inventory']:AddItem(src, name, count, false, false, 'koja-lib')
-            return true
+            return exports['qb-inventory']:AddItem(src, name, count, false, false, 'koja-lib') ~= false
         end
         return false
     end
@@ -345,11 +356,9 @@ elseif FRAMEWORK == 'qb' then
     removeInventoryItem = function(src, name, count)
         local Player = getPlayer(src)
         if Player and Player.Functions and Player.Functions.RemoveItem then
-            Player.Functions.RemoveItem(name, count)
-            return true
+            return Player.Functions.RemoveItem(name, count) == true
         elseif GetResourceState('qb-inventory') == 'started' then
-            exports['qb-inventory']:RemoveItem(src, name, count, false, 'koja-lib')
-            return true
+            return exports['qb-inventory']:RemoveItem(src, name, count, false, 'koja-lib') == true
         end
         return false
     end
@@ -357,14 +366,31 @@ elseif FRAMEWORK == 'qb' then
     getInventoryItemCount = function(src, name)
         local Player = getPlayer(src)
         if not Player then return 0 end
-        local item = Player.Functions.GetItemByName(name)
-        if not item then return 0 end
-        return item.amount or item.count or 0
+        -- qb-inventory v2 moved item lookups out of Player.Functions.
+        if Player.Functions.GetItemByName then
+            local item = Player.Functions.GetItemByName(name)
+            if not item then return 0 end
+            return item.amount or item.count or 0
+        elseif GetResourceState('qb-inventory') == 'started' then
+            return tonumber(exports['qb-inventory']:GetItemCount(src, name)) or 0
+        end
+        return 0
     end
 
     getPlayerGroup = function(src)
         local Player = getPlayer(src)
         if not Player then return false end
+        -- qb has no player group field, permissions come from QBCore.Functions.GetPermission.
+        if QBCore and QBCore.Functions.GetPermission then
+            local perms = QBCore.Functions.GetPermission(src)
+            if type(perms) == 'table' then
+                for _, group in ipairs({ 'god', 'admin', 'mod' }) do
+                    if perms[group] then return group end
+                end
+                return 'user'
+            end
+            return perms
+        end
         return Player.PlayerData.group
     end
 
@@ -537,7 +563,7 @@ else
 
     GetPlayers = function()
         local fn = CF().GetPlayers
-        return fn and fn() or {}
+        return fn and fn() or NativeGetPlayers()
     end
 
     getPlayer = function(src)

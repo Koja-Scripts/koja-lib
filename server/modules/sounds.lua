@@ -2,6 +2,16 @@
 local DISTANCE_SOUND_COOLDOWN = 1000
 local lastDistanceSound = {}
 
+-- Client triggered sounds: built-in names ('hedge') or nui:// files from other resources.
+-- Remote http(s) urls are refused so a client can't make others fetch arbitrary urls.
+local function isAllowedClientSound(file, soundId)
+    if type(file) ~= 'string' or file == '' or #file > 256 then return false end
+    if not (file:match('^[%w_%-/]+$') or file:match('^nui://[%w_%-]+/[%w_%-%./]+$')) then return false end
+    if file:find('%.%.') then return false end
+    if soundId ~= nil and (type(soundId) ~= 'string' or #soundId > 64) then return false end
+    return true
+end
+
 ---@param dist number
 ---@param file string
 ---@param volume number
@@ -18,7 +28,7 @@ AddEventHandler('koja-lib:server:distanceSound', function(dist, file, volume, so
     end
     lastDistanceSound[src] = now
 
-    if type(file) ~= 'string' or file == '' then return end
+    if not isAllowedClientSound(file, soundId) then return end
 
     local distanceLimit = 250.0
     local maxDistance = tonumber(dist) or 0.0
@@ -44,7 +54,7 @@ end)
 RegisterNetEvent('koja-lib:server:onlySourceSound')
 AddEventHandler('koja-lib:server:onlySourceSound', function(file, volume, soundId, loop)
     local src = source
-    if type(file) ~= 'string' or file == '' then return end
+    if not isAllowedClientSound(file, soundId) then return end
     local vol = math.min(1.0, math.max(0.0, tonumber(volume) or 0.5))
     -- Only plays for the triggering player — never relayed to others.
     TriggerClientEvent('koja-lib:client:onlySourceSound', src, file, vol, soundId, loop == true)

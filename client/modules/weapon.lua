@@ -1,10 +1,10 @@
 ---@param PlayerPed number # Player Ped ID
 ---@return table|nil # Weapon information table or nil
 KOJA.Client.getCurrentWeaponInfo = function(PlayerPed)
-    local _, weaponHash = GetCurrentPedWeapon(PlayerPed, true)
+    local hasWeapon, weaponHash = GetCurrentPedWeapon(PlayerPed, true)
 
-    if weaponHash then
-        local ammoInClip = GetAmmoInClip(PlayerPed, weaponHash)
+    if hasWeapon and weaponHash ~= `WEAPON_UNARMED` then
+        local _, ammoInClip = GetAmmoInClip(PlayerPed, weaponHash)
         local totalAmmo = GetAmmoInPedWeapon(PlayerPed, weaponHash)
 
         return {

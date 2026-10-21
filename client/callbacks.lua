@@ -5,8 +5,11 @@ KOJA.Client.TriggerServerCallback = function(key, payload, func)
     if not func then
         func = function() end
     end
-    KOJA.Callbacks[key] = func
-    TriggerServerEvent("koja:Server:HandleCallback", key, payload)
+    -- Goes through the request-id based dispatcher (await.lua), so several calls
+    -- with the same key can be in flight at once without overwriting each other.
+    CreateThread(function()
+        func(KOJA.Client.AwaitServerCallback(key, payload, 60000))
+    end)
 end
 
 RegisterNetEvent("koja:Client:HandleCallback", function(key, data)

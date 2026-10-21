@@ -35,7 +35,9 @@ local function getBalance(name, account)
     if name == 'Renewed-Banking' then
         return safe(function() return exports['Renewed-Banking']:getAccountMoney(account) end)
     elseif name == 'qb-banking' then
-        return safe(function() return exports['qb-banking']:GetAccountBalance(account) end)
+        -- GetAccountBalance returns 0 for missing accounts, GetAccount returns nil.
+        local data = safe(function() return exports['qb-banking']:GetAccount(account) end)
+        return data and (tonumber(data.account_balance) or 0) or nil
     elseif name == 'qb-management' then
         return safe(function() return exports['qb-management']:GetAccount(account) end)
     elseif name == 'okokBanking' then

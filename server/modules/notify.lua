@@ -11,7 +11,7 @@ KOJA.Server.SendNotify = function(data)
     local backend = Config.Notify
 
     if backend == "esx" then
-        TriggerClientEvent("esx:ShowNotification", data.source, data.desc)
+        TriggerClientEvent("esx:showNotification", data.source, data.desc, data.type, data.time, data.title)
     elseif backend == "qb" then
         -- QBCore only knows primary / success / error, map the rest to primary.
         local qbTypes = { info = 'primary', warning = 'primary', question = 'primary' }

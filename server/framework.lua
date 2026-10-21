@@ -266,13 +266,9 @@ elseif FRAMEWORK == 'qb' then
 
     -- Resolve the QBCore object defensively so neither a missing qb-core
     -- nor qbx_core's compatibility shim crashes this file on load.
+    -- qbx_core has no GetCoreObject export of its own, it provides exports['qb-core'] through its bridge.
     local QBCore
-    if GetResourceState('qb-core') == 'started' then
-        pcall(function() QBCore = exports['qb-core']:GetCoreObject() end)
-    end
-    if not QBCore and GetResourceState('qbx_core') == 'started' then
-        pcall(function() QBCore = exports.qbx_core:GetCoreObject() end)
-    end
+    pcall(function() QBCore = exports['qb-core']:GetCoreObject() end)
 
     GetPlayers = function()
         return QBCore.Functions.GetPlayers()
@@ -415,12 +411,7 @@ elseif FRAMEWORK == 'qb' then
     setJob = function(src, job, grade)
         grade = tonumber(grade) or 0
         if isQbx then
-            local identifier = getIdentifier(src)
-            local done = safe(function()
-                exports.qbx_core:AddPlayerToJob(identifier, job, grade)
-                exports.qbx_core:SetPlayerPrimaryJob(identifier, job)
-                return true
-            end)
+            local done = safe(function() return exports.qbx_core:SetJob(src, job, grade) end)
             if done then return true end
         end
         local Player = getPlayer(src)
@@ -446,11 +437,7 @@ elseif FRAMEWORK == 'qb' then
     setOfflineJob = function(identifier, job, grade)
         grade = tonumber(grade) or 0
         if isQbx then
-            local done = safe(function()
-                exports.qbx_core:AddPlayerToJob(identifier, job, grade)
-                exports.qbx_core:SetPlayerPrimaryJob(identifier, job)
-                return true
-            end)
+            local done = safe(function() return exports.qbx_core:SetJob(identifier, job, grade) end)
             if done then return true end
         end
         local def = offlineTables.qb

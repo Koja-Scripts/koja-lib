@@ -14,10 +14,8 @@ end
 if KOJA.Framework == 'esx' then
     ESX = exports['es_extended']:getSharedObject()
 elseif KOJA.Framework == 'qb' then
+    -- Also covers qbx_core, which provides exports['qb-core'] through its bridge.
     pcall(function() QBCore = exports['qb-core']:GetCoreObject() end)
-    if not QBCore then
-        pcall(function() QBCore = exports.qbx_core:GetCoreObject() end)
-    end
 end
 
 AddEventHandler('koja:getSharedObject', function(cb)

@@ -38,6 +38,10 @@ KOJA.Server.GiveVehicleKeys = function(src, plate, netId)
     if name == 'qbx_vehiclekeys' and vehicle ~= 0 then
         local ok = pcall(function() exports.qbx_vehiclekeys:GiveKeys(src, vehicle, true) end)
         if ok then return true end
+    elseif name == 'qb-vehiclekeys' and plate then
+        -- client event vehiclekeys:client:SetOwner is marked backwards compatibility only upstream
+        local ok = pcall(function() exports['qb-vehiclekeys']:GiveKeys(src, plate) end)
+        if ok then return true end
     elseif name == 'wasabi_carlock' and plate then
         local ok = pcall(function() exports.wasabi_carlock:GiveKey(src, plate) end)
         if ok then return true end

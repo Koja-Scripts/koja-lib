@@ -98,9 +98,9 @@ Adapters['codem-inventory'] = {
         return tonumber(count) or 0
     end,
     GetItems = function(src)
-        -- GetInventory(identifier, source): identifier can be source when passed as number
+        -- GetInventory(identifier, source)
         local items = safeCall(function()
-            return exports['codem-inventory']:GetInventory(src, src)
+            return exports['codem-inventory']:GetInventory(getIdentifier(src), src)
         end)
         return normaliseItems(items)
     end,
@@ -113,29 +113,29 @@ Adapters['codem-inventory'] = {
 --      getTotalItemAmount(inventoryId, itemName, metadata?) -> number
 --      getInventory(inventoryId) -> inventory table
 --      hasItem(inventoryId, itemName, quantity?) -> boolean
--- For player inventories, inventoryId = tostring(source)
+-- For player inventories, inventoryId = source (number), stashes use string ids
 Adapters['jaksam_inventory'] = {
     AddItem = function(src, name, count, metadata, slot)
         local ok = safeCall(function()
-            return exports.jaksam_inventory:addItem(tostring(src), name, count, metadata, slot)
+            return exports.jaksam_inventory:addItem(src, name, count, metadata, slot)
         end)
         return ok == true
     end,
     RemoveItem = function(src, name, count, metadata, slot)
         local ok = safeCall(function()
-            return exports.jaksam_inventory:removeItem(tostring(src), name, count, metadata, slot)
+            return exports.jaksam_inventory:removeItem(src, name, count, metadata, slot)
         end)
         return ok == true
     end,
     GetItemCount = function(src, name, metadata)
         local count = safeCall(function()
-            return exports.jaksam_inventory:getTotalItemAmount(tostring(src), name, metadata)
+            return exports.jaksam_inventory:getTotalItemAmount(src, name, metadata)
         end)
         return tonumber(count) or 0
     end,
     GetItems = function(src)
         local inv = safeCall(function()
-            return exports.jaksam_inventory:getInventory(tostring(src))
+            return exports.jaksam_inventory:getInventory(src)
         end)
         if type(inv) == 'table' and inv.items then
             return normaliseItems(inv.items)

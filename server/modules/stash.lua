@@ -238,16 +238,19 @@ end
 
 local function ensureQbStashLoaded(id)
     local live = safe(function() return exports['qb-inventory']:GetInventory(id) end)
-    if live then return true end
-
     local def = getStashDef(id)
-    local items = {}
-    for _, entry in ipairs(Db.Load(id)) do
-        items[tonumber(entry.slot) or (#items + 1)] = entry
-    end
+
+    -- qb-inventory loads saved inventories without maxweight / slots and refuses to add items
+    -- until they are set, CreateInventory fills that in for an existing inventory too.
     return safe(function()
         exports['qb-inventory']:CreateInventory(id, { label = def.label, maxweight = def.weight, slots = def.slots })
-        exports['qb-inventory']:SetInventory(id, items)
+        if not live then
+            local items = {}
+            for _, entry in ipairs(Db.Load(id)) do
+                items[tonumber(entry.slot) or (#items + 1)] = entry
+            end
+            exports['qb-inventory']:SetInventory(id, items)
+        end
         return true
     end) == true
 end

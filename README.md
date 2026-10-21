@@ -130,7 +130,7 @@ Everything is available through `KOJA = exports['koja-lib']:getSharedObject()` (
 <summary><b>🚀 Publishing a release (maintainers)</b></summary>
 
 1. Bump `version` in `fxmanifest.lua` and push to `main`.
-2. Either push a matching tag (`git tag v1.2.1 && git push origin v1.2.1`) or run the **Release** workflow manually from the Actions tab — it builds the NUI, packages `koja-lib.zip` and publishes the release.
+2. Either push a matching tag (`git tag 1.2.1 && git push origin 1.2.1`) or run the **Release** workflow manually from the Actions tab — it builds the NUI, packages `koja-lib.zip` and publishes the release.
 
 </details>
 

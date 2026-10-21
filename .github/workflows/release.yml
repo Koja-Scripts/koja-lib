@@ -4,12 +4,13 @@ name: Release
 # release asset, so server owners can download it without touching git/node.
 #
 # Triggers:
-#   - push a tag like v1.2.0 (must match `version` in fxmanifest.lua)
+#   - push a tag like 1.2.0 (must match `version` in fxmanifest.lua)
 #   - run manually from the Actions tab (tag is taken from fxmanifest.lua)
 
 on:
   push:
     tags:
+      - '*.*.*'
       - 'v*.*.*'
   workflow_dispatch:
 
@@ -47,11 +48,13 @@ jobs:
               exit 1
             fi
           else
-            tag="v${manifest_version}"
-            if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
-              echo "::error::Tag ${tag} already exists - bump version in fxmanifest.lua first"
-              exit 1
-            fi
+            tag="${manifest_version}"
+            for existing in "${manifest_version}" "v${manifest_version}"; do
+              if git rev-parse -q --verify "refs/tags/${existing}" >/dev/null; then
+                echo "::error::Tag ${existing} already exists - bump version in fxmanifest.lua first"
+                exit 1
+              fi
+            done
           fi
 
           echo "version=${manifest_version}" >> "$GITHUB_OUTPUT"

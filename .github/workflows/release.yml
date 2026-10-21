@@ -90,6 +90,37 @@ jobs:
           (cd dist && zip -rq "${RESOURCE_NAME}.zip" "${RESOURCE_NAME}")
           ls -la dist
 
+      - name: Release notes
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${RESOURCE_NAME}.zip"
+          {
+            echo "## Download"
+            echo
+            echo "👉 **[${RESOURCE_NAME}.zip](${url})** - ready to use, NUI already built."
+            echo
+            echo "> ⚠️ Do **not** download *Source code (zip)* - it does not include the built UI (\`web/build\`) and requires Node.js to build."
+            echo
+            echo "### Installation"
+            echo "1. Download \`${RESOURCE_NAME}.zip\` above."
+            echo "2. Extract it into your server's \`resources\` folder (the folder must be named \`${RESOURCE_NAME}\`)."
+            echo "3. Add \`ensure ${RESOURCE_NAME}\` to \`server.cfg\` (after your framework and \`oxmysql\`)."
+            echo
+            echo "Full docs: https://docs.kojascripts.eu/"
+            echo
+            # Section of CHANGELOG.md for this version, if there is one
+            if [ -f CHANGELOG.md ]; then
+              section=$(awk -v v="## [${VERSION}]" 'index($0, v) == 1 { found = 1; next } found && /^## \[/ { exit } found { print }' CHANGELOG.md)
+              if [ -n "$section" ]; then
+                echo "## Changelog"
+                echo "$section"
+              fi
+            fi
+          } > dist/RELEASE_NOTES.md
+          cat dist/RELEASE_NOTES.md
+
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
@@ -98,16 +129,4 @@ jobs:
           target_commitish: ${{ github.sha }}
           generate_release_notes: true
           files: dist/${{ env.RESOURCE_NAME }}.zip
-          body: |
-            ## Download
-
-            👉 **[${{ env.RESOURCE_NAME }}.zip](https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.tag }}/${{ env.RESOURCE_NAME }}.zip)** - ready to use, NUI already built.
-
-            > ⚠️ Do **not** download *Source code (zip)* - it does not include the built UI (`web/build`) and requires Node.js to build.
-
-            ### Installation
-            1. Download `${{ env.RESOURCE_NAME }}.zip` above.
-            2. Extract it into your server's `resources` folder (the folder must be named `${{ env.RESOURCE_NAME }}`).
-            3. Add `ensure ${{ env.RESOURCE_NAME }}` to `server.cfg` (after your framework and `oxmysql`).
-
-            Full docs: https://docs.kojascripts.eu/
+          body_path: dist/RELEASE_NOTES.md

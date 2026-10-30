@@ -4,6 +4,7 @@
 
 ### Added
 - **Version checker:** koja-lib now reports every started Koja Scripts resource (fxmanifest `author` containing "Koja") to `versions.kojascripts.com` in one request and prints a single link with versions and changelogs. Only outdated or critical resources are listed in the console.
+- Resources can declare `koja_resource '<repo>'` in their fxmanifest; that name is reported instead of the folder name, so renamed folders (e.g. `koja-hud-free` installed as `koja-hud`) still map to the right script. `GetVersionStatus` accepts either name.
 - `Config.VersionCheck = { enabled, url }` in `editable/shared/config.lua`.
 - Server exports `GetVersionReport()` and `GetVersionStatus(resourceName)`, plus `KOJA.Server.GetVersionReport` / `KOJA.Server.GetVersionStatus`.
 - Server event `koja-lib:versions:ready` (report) after each successful report.

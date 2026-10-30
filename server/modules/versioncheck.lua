@@ -12,6 +12,7 @@ local scheduleToken = 0
 local sending = false
 local queued = false
 local lastSignature = nil
+local folderNames = {}
 
 local function DebugLog(message)
     if Config.Debug then
@@ -43,27 +44,51 @@ end
 
 local function IsKojaResource(name)
     if GetResourceState(name) ~= 'started' then return false end
-    if #name > 64 or not name:match('^[%w][%w_%-]+$') then return false end
     return HasKojaAuthor(name)
 end
 
+local function IsValidName(value)
+    return type(value) == 'string' and #value <= 64 and value:match('^[%w][%w_%-]+$') ~= nil
+end
+
+local function CanonicalName(folder)
+    local declared = GetResourceMetadata(folder, 'koja_resource', 0)
+    if type(declared) == 'string' then
+        declared = declared:match('^%s*(.-)%s*$')
+        if IsValidName(declared) then return declared end
+    end
+    return folder
+end
+
 local function CollectResources()
-    local list = {}
+    local found = {}
     for i = 0, GetNumResources() - 1 do
-        local name = GetResourceByFindIndex(i)
-        if name and IsKojaResource(name) then
-            list[#list + 1] = { name = name, version = NormalizeVersion(GetResourceMetadata(name, 'version', 0)) }
+        local folder = GetResourceByFindIndex(i)
+        if folder and IsKojaResource(folder) then
+            local name = CanonicalName(folder)
+            if IsValidName(name) then
+                found[#found + 1] = { folder = folder, name = name, version = NormalizeVersion(GetResourceMetadata(folder, 'version', 0)) }
+            end
         end
     end
-    table.sort(list, function(a, b)
-        if a.name == resourceName then return true end
-        if b.name == resourceName then return false end
-        return a.name < b.name
+    table.sort(found, function(a, b)
+        if a.folder == resourceName then return true end
+        if b.folder == resourceName then return false end
+        if a.name ~= b.name then return a.name < b.name end
+        return a.folder < b.folder
     end)
-    while #list > maxResources do
-        table.remove(list)
+
+    local list = {}
+    local seen = {}
+    local folders = {}
+    for _, item in ipairs(found) do
+        if not seen[item.name] and #list < maxResources then
+            seen[item.name] = true
+            list[#list + 1] = { name = item.name, version = item.version }
+        end
+        if seen[item.name] then folders[item.folder] = item.name end
     end
-    return list
+    return list, folders
 end
 
 local function PrintReport(report, count)
@@ -93,7 +118,7 @@ local function PrintReport(report, count)
     print(('  Versions & changelogs: ^5%s^0'):format(report.url))
 end
 
-local function HandleResponse(status, body)
+local function HandleResponse(status, body, folders)
     if status == 422 then return DebugLog('no tracked resources') end
     if status == 429 then return DebugLog('rate limited') end
     if status ~= 200 or type(body) ~= 'string' then return DebugLog(('request failed (%s)'):format(tostring(status))) end
@@ -127,6 +152,7 @@ local function HandleResponse(status, body)
         end
     end
 
+    folderNames = folders or {}
     versionReport = { id = data.id, url = data.url, resources = entries }
     PrintReport(versionReport, count)
     TriggerEvent('koja-lib:versions:ready', versionReport)
@@ -139,7 +165,7 @@ local function SendReport()
         queued = true
         return
     end
-    local resources = CollectResources()
+    local resources, folders = CollectResources()
     if #resources == 0 then return end
 
     local payload = { resources = resources }
@@ -160,7 +186,7 @@ local function SendReport()
     sending = true
     PerformHttpRequest(endpoint, function(status, body)
         sending = false
-        local ok, err = pcall(HandleResponse, status, body)
+        local ok, err = pcall(HandleResponse, status, body, folders)
         if not ok then DebugLog(('response error: %s'):format(tostring(err))) end
         if queued then
             queued = false
@@ -183,7 +209,7 @@ end
 
 KOJA.Server.GetVersionStatus = function(name)
     if not versionReport or type(name) ~= 'string' then return nil end
-    return versionReport.resources[name]
+    return versionReport.resources[name] or versionReport.resources[folderNames[name] or '']
 end
 
 exports('GetVersionReport', KOJA.Server.GetVersionReport)

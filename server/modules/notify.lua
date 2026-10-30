@@ -24,6 +24,13 @@ KOJA.Server.SendNotify = function(data)
             type = data.type or 'inform',
             duration = data.time or 5000
         })
+    elseif backend == 'okok' then
+        TriggerClientEvent('okokNotify:Alert', data.source, data.title or '', data.desc or '', data.time or 5000, data.type == 'inform' and 'info' or (data.type or 'info'))
+    elseif backend == 'mythic' then
+        local mythicTypes = { success = 'success', error = 'error' }
+        TriggerClientEvent('mythic_notify:client:SendAlert', data.source, { type = mythicTypes[data.type] or 'inform', text = data.desc or data.title or '', length = data.time or 5000 })
+    elseif backend == 'pnotify' then
+        TriggerClientEvent('pNotify:SendNotification', data.source, { text = data.desc or data.title or '', type = data.type == 'error' and 'error' or (data.type == 'success' and 'success' or 'info'), timeout = data.time or 5000, layout = 'centerRight' })
     elseif backend == 'lib' then
         TriggerClientEvent('koja-lib:nui:createNotification', data.source, {
             label = data.title, description = data.desc, type = data.type, duration = data.time,

@@ -40,8 +40,10 @@ local function detect()
     if wanted == 'none' or wanted == 'false' then return 'none' end
     if wanted == 'ox_target' or wanted == 'ox' then return 'ox_target' end
     if wanted == 'qb-target' or wanted == 'qb' then return 'qb-target' end
+    if wanted == 'qtarget' then return 'qtarget' end
     if started('ox_target') then return 'ox_target' end
     if started('qb-target') then return 'qb-target' end
+    if started('qtarget') then return 'qtarget' end
     return 'none'
 end
 
@@ -53,6 +55,10 @@ end
 
 -- Name is a snapshot taken at load / when a target resource starts, use Target.GetName() for the live value
 Target.Name = detect()
+
+local function qbApi()
+    return exports[Target.Name == 'qtarget' and 'qtarget' or 'qb-target']
+end
 
 ---@return string # 'ox_target' | 'qb-target' | 'none' (resolved live)
 Target.GetName = function()
@@ -149,7 +155,7 @@ Target.AddSphere = function(name, coords, radius, options)
     end
 
     local done = safe(function()
-        exports['qb-target']:AddCircleZone(name, center, radius, { name = name, debugPoly = Config.Debug, useZ = true },
+        qbApi():AddCircleZone(name, center, radius, { name = name, debugPoly = Config.Debug, useZ = true },
             { options = toQb(options), distance = maxDistance(options) })
         return true
     end)
@@ -188,7 +194,7 @@ Target.AddBox = function(name, coords, size, heading, options)
     end
 
     local done = safe(function()
-        exports['qb-target']:AddBoxZone(name, center, boxSize.x, boxSize.y, {
+        qbApi():AddBoxZone(name, center, boxSize.x, boxSize.y, {
             name = name, heading = heading, debugPoly = Config.Debug,
             minZ = center.z - boxSize.z / 2, maxZ = center.z + boxSize.z / 2,
         }, { options = toQb(options), distance = maxDistance(options) })
@@ -206,7 +212,7 @@ Target.Remove = function(name)
     if zone.kind == 'ox' then
         safe(function() exports.ox_target:removeZone(zone.id) end)
     else
-        safe(function() exports['qb-target']:RemoveZone(zone.id) end)
+        safe(function() qbApi():RemoveZone(zone.id) end)
     end
 end
 
@@ -227,7 +233,7 @@ Target.AddLocalEntity = function(entity, options)
         return safe(function() exports.ox_target:addLocalEntity(entity, toOx(options)) return true end)
     end
     return safe(function()
-        exports['qb-target']:AddTargetEntity(entity, { options = toQb(options), distance = maxDistance(options) })
+        qbApi():AddTargetEntity(entity, { options = toQb(options), distance = maxDistance(options) })
         return true
     end)
 end
@@ -250,7 +256,7 @@ Target.RemoveLocalEntity = function(entity, names)
         else
             for _, label in pairs(store) do labels[#labels + 1] = label end
         end
-        safe(function() exports['qb-target']:RemoveTargetEntity(entity, #labels > 0 and labels or nil) end)
+        safe(function() qbApi():RemoveTargetEntity(entity, #labels > 0 and labels or nil) end)
     end
 
     if list then

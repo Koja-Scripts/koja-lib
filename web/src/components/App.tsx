@@ -8,6 +8,7 @@ import Progressbar from "./progressbar/Progressbar";
 import TextUI from "./textui/TextUI";
 import Notifications from "./notifications/Notifications";
 import Sounds from "./sounds/sounds";
+import DevTool from "./devtool/DevTool";
 import { debugData } from "../utils/debugData";
 import type { ProgressBarData } from "@/types/progressBar";
 import type { TextUIData } from "@/slices/textUISlice";
@@ -99,6 +100,7 @@ const App: React.FC = () => {
       <TextUI />
       <Notifications />
       <Sounds />
+      <DevTool />
     </div>
   );
 };

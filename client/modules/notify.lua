@@ -24,6 +24,13 @@ KOJA.Client.SendNotify = function(data)
             type = data.type or 'success',
             position = data.position or 'top'
         })
+    elseif backend == 'okok' and GetResourceState('okokNotify') == 'started' then
+        exports['okokNotify']:Alert(data.title or '', data.desc or '', data.time or 5000, data.type == 'inform' and 'info' or (data.type or 'info'))
+    elseif backend == 'mythic' and GetResourceState('mythic_notify') == 'started' then
+        local mythicTypes = { success = 'success', error = 'error' }
+        exports['mythic_notify']:DoHudText(mythicTypes[data.type] or 'inform', data.desc or data.title or '')
+    elseif backend == 'pnotify' and GetResourceState('pNotify') == 'started' then
+        exports.pNotify:SendNotification({ text = data.desc or data.title or '', type = data.type == 'error' and 'error' or (data.type == 'success' and 'success' or 'info'), timeout = data.time or 5000, layout = 'centerRight' })
     elseif backend == 'lib' then
         KOJA.Client.LibNotify(data)
     else

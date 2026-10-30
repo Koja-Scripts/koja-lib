@@ -130,15 +130,11 @@ KOJA.Client.GetClosestVehicle = function(coords, maxDist)
     return closest, closestDist
 end
 
-local FUEL_RESOURCES = { 'ox_fuel', 'LegacyFuel', 'cdn-fuel', 'ps-fuel', 'lc_fuel' }
+local STATEBAG_FUEL = { ox_fuel = true, ['Renewed-Fuel'] = true }
 
 local function fuelName()
-    local wanted = tostring(Config.Fuel or 'auto')
-    if wanted ~= 'auto' then return wanted end
-    for _, name in ipairs(FUEL_RESOURCES) do
-        if started(name) then return name end
-    end
-    return 'native'
+    local name = Misc.Utils.ResolveIntegration('fuel', 'native')
+    return name == 'none' and 'native' or name
 end
 
 ---@return string # Fuel resource in use ('ox_fuel', 'LegacyFuel', ... or 'native')
@@ -152,7 +148,7 @@ KOJA.Client.SetFuel = function(vehicle, level)
     level = math.max(0.0, math.min(100.0, tonumber(level) or 100.0)) + 0.0
 
     local name = fuelName()
-    if name == 'ox_fuel' then
+    if STATEBAG_FUEL[name] then
         Entity(vehicle).state:set('fuel', level, true)
     elseif name ~= 'native' then
         safe(function() exports[name]:SetFuel(vehicle, level) end)
@@ -171,14 +167,8 @@ KOJA.Client.GiveVehicleKeys = function(vehicle, plate)
     end
     if plate then plate = tostring(plate):gsub('^%s+', ''):gsub('%s+$', ''):upper() end
 
-    local wanted = tostring(Config.VehicleKeys or 'auto')
-    local name = wanted
-    if wanted == 'auto' then
-        name = 'none'
-        for _, resource in ipairs({ 'qbx_vehiclekeys', 'qb-vehiclekeys', 'wasabi_carlock', 'mk_vehiclekeys' }) do
-            if started(resource) then name = resource break end
-        end
-    end
+    local name = Misc.Utils.ResolveIntegration('keys')
+    local hasVehicle = vehicle ~= nil and vehicle ~= 0 and DoesEntityExist(vehicle)
 
     if name == 'qb-vehiclekeys' or name == 'qbx_vehiclekeys' then
         if plate then TriggerEvent('vehiclekeys:client:SetOwner', plate) end
@@ -186,7 +176,41 @@ KOJA.Client.GiveVehicleKeys = function(vehicle, plate)
     elseif name == 'wasabi_carlock' then
         return plate ~= nil and safe(function() exports.wasabi_carlock:GiveKey(plate) return true end) == true
     elseif name == 'mk_vehiclekeys' then
-        return vehicle ~= nil and vehicle ~= 0 and safe(function() exports['mk_vehiclekeys']:AddKey(vehicle) return true end) == true
+        return hasVehicle and safe(function() exports['mk_vehiclekeys']:AddKey(vehicle) return true end) == true
+    elseif name == 'qs-vehiclekeys' then
+        local model = hasVehicle and GetDisplayNameFromVehicleModel(GetEntityModel(vehicle)) or nil
+        return plate ~= nil and safe(function() exports['qs-vehiclekeys']:GiveKeys(plate, model, true) return true end) == true
+    elseif name == 'Renewed-Vehiclekeys' then
+        return plate ~= nil and safe(function() exports['Renewed-Vehiclekeys']:addKey(plate) return true end) == true
+    elseif name == 'cd_garage' then
+        if plate then TriggerEvent('cd_garage:AddKeys', plate) end
+        return plate ~= nil
+    elseif name == 'MrNewbVehicleKeys' then
+        return hasVehicle and safe(function() exports.MrNewbVehicleKeys:GiveKeys(vehicle) return true end) == true
+    elseif name == 'okokGarage' then
+        if plate then TriggerServerEvent('okokGarage:GiveKeys', plate) end
+        return plate ~= nil
+    end
+    return false
+end
+
+---@param vehicle number|nil # Vehicle entity
+---@param plate string|nil # Plate (read from the vehicle when nil)
+---@return boolean
+KOJA.Client.RemoveVehicleKeys = function(vehicle, plate)
+    if (not plate or plate == '') and vehicle and vehicle ~= 0 and DoesEntityExist(vehicle) then
+        plate = GetVehicleNumberPlateText(vehicle)
+    end
+    if plate then plate = tostring(plate):gsub('^%s+', ''):gsub('%s+$', ''):upper() end
+    if not plate then return false end
+
+    local name = Misc.Utils.ResolveIntegration('keys')
+    if name == 'qs-vehiclekeys' then
+        return safe(function() exports['qs-vehiclekeys']:RemoveKeys(plate) return true end) == true
+    elseif name == 'Renewed-Vehiclekeys' then
+        return safe(function() exports['Renewed-Vehiclekeys']:removeKey(plate) return true end) == true
+    elseif name == 'wasabi_carlock' then
+        return safe(function() exports.wasabi_carlock:RemoveKey(plate) return true end) == true
     end
     return false
 end
@@ -199,6 +223,12 @@ RegisterNetEvent('koja:Client:GiveVehicleKeys', function(netId, plate)
         if NetworkDoesNetworkIdExist(netId) then vehicle = NetToVeh(netId) end
     end
     KOJA.Client.GiveVehicleKeys(vehicle, plate)
+end)
+
+RegisterNetEvent('koja:Client:RemoveVehicleKeys', function(netId, plate)
+    local vehicle = 0
+    if netId and NetworkDoesNetworkIdExist(netId) then vehicle = NetToVeh(netId) end
+    KOJA.Client.RemoveVehicleKeys(vehicle, plate)
 end)
 
 local function parseGender(value)

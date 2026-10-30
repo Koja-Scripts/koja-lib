@@ -707,12 +707,11 @@ end
 processManifest = function()
     local content = LoadResourceFile(resourceName, manifestFile)
     if not content then
-        print(('[%s] Failed to load %s'):format(resourceName, manifestFile))
+        print(('^1[koja-lib]^0 could not read %s'):format(manifestFile))
         return
     end
 
     local useESX = isResourceStarted('es_extended')
-    print(useESX and '> es_extended detected — ensuring imports.lua entry' or '> es_extended not detected — removing imports.lua entry')
 
     local lines = {}
     for line in content:gmatch('[^\r\n]+') do
@@ -730,7 +729,7 @@ processManifest = function()
     end
 
     if not startIdx or not endIdx then
-        print(('[%s] shared_scripts block not found'):format(resourceName))
+        print(('^1[koja-lib]^0 shared_scripts block not found in %s'):format(manifestFile))
         return
     end
 
@@ -762,10 +761,7 @@ processManifest = function()
         end
     end
 
-    if unchanged then
-        print(('[%s] No changes needed for %s'):format(resourceName, manifestFile))
-        return
-    end
+    if unchanged then return end
 
     local updated = {}
     for i = 1, startIdx do updated[#updated+1] = lines[i] end
@@ -776,9 +772,10 @@ processManifest = function()
     local newContent = table.concat(updated, "\n")
     local success = SaveResourceFile(resourceName, manifestFile, newContent, -1)
     if success then
-        print(('[%s] Successfully updated %s'):format(resourceName, manifestFile))
+        local note = useESX and 'fxmanifest.lua now loads @es_extended/imports.lua — restart koja-lib once' or 'fxmanifest.lua no longer loads @es_extended/imports.lua — restart koja-lib once'
+        if KOJA.Server.Banner then KOJA.Server.Banner.Note(note) else print('^3[koja-lib]^0 ' .. note) end
     else
-        print(('[%s] Failed to save %s'):format(resourceName, manifestFile))
+        print(('^1[koja-lib]^0 could not save %s'):format(manifestFile))
     end
 end
 

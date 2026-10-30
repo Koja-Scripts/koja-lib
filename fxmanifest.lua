@@ -1,7 +1,7 @@
 fx_version 'cerulean'
 name 'koja-lib'
 author 'Koja Scripts'
-version '1.4.1'
+version '1.5.0'
 description 'Library to scripts'
 use_fxv2_oal 'true'
 lua54 'yes'
@@ -12,6 +12,7 @@ shared_scripts {
     '@es_extended/imports.lua',
     'editable/shared/config.lua',
     'editable/shared/utils.lua',
+    'editable/shared/integrations.lua',
     'editable/shared/inventory.lua',
 }
 client_scripts {

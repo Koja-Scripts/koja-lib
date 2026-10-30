@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.5.0] - 2026-10-30
+
+### Added
+- **Dev tool:** `/kojadev` for admins, configured in `Config.DevTool`.
+  - Copy coordinates as vector3, vector4, vec3, a Lua table or JSON.
+  - Teleport to the waypoint or to coordinates, noclip, and coordinates on screen.
+  - An entity inspector: model, hash, coordinates, rotation and net id.
+  - Vehicle spawn, repair, refuel, flip, keys and delete.
+  - Local time and weather, and clearing the area.
+- **Dispatch:** `KOJA.Server.SendDispatch` and `KOJA.Client.SendDispatch` send alerts to koja-mdt, koja-dispatch, ps-dispatch, cd_dispatch, core_dispatch, rcore_dispatch or qs-dispatch.
+  - Client alerts are checked on the server: cooldown, distance and allowed jobs, all set in `Config.Dispatch`.
+- **Phone:** `KOJA.Server.SendPhoneNotification` and `KOJA.Server.SendPhoneMail` work with lb-phone, qs-smartphone, gksphone and qb-phone, and fall back to a normal notification.
+- **Fuel:** Renewed-Fuel, qs-fuelstations, okokGasStation, lj-fuel and ti_fuel.
+- **Vehicle keys:** MrNewbVehicleKeys, qs-vehiclekeys, Renewed-Vehiclekeys, cd_garage and okokGarage, plus `RemoveVehicleKeys` on server and client.
+- **Target:** qtarget.
+- **Notifications:** `Config.Notify` accepts `okok`, `mythic` and `pnotify`.
+- `editable/shared/integrations.lua` holds the detection order of every integration, so it can be reordered or extended without touching the code.
+- `Config.Phone` and `Config.Dispatch`.
+
+### Changed
+- **Startup console:** one compact block with the version, the framework, every detected integration and the number of Koja resources. The version summary uses the same style.
+- **fxmanifest:** the auto-fix only prints when it actually changes the file.
+
 ## [1.4.1] - 2026-10-30
 
 ### Changed

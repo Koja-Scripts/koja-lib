@@ -110,16 +110,17 @@ local function PrintReport(report, count)
     lastSignature = joined
 
     table.sort(flagged, function(a, b) return a.name < b.name end)
-    print(('^5Koja Scripts^0 — %d resource%s checked'):format(count, count == 1 and '' or 's'))
+    print(('^5  KOJA SCRIPTS  ^9%d resource%s checked^0'):format(count, count == 1 and '' or 's'))
     if #flagged == 0 then
-        print('  ^2all up to date^0')
+        print('  ^2•^0 everything is up to date')
     else
         for _, entry in ipairs(flagged) do
             local color = entry.status == 'critical' and '^1' or '^3'
-            print(('  %s%-8s^0 %s  %s → %s%s^0'):format(color, entry.status, entry.name, tostring(entry.current or '?'), color, tostring(entry.latest or '?')))
+            local label = entry.status == 'critical' and 'critical update' or 'update available'
+            print(('  %s•^0 %-24s ^9%s^0 → %s%s^0  ^9%s^0'):format(color, entry.name, tostring(entry.current or '?'), color, tostring(entry.latest or '?'), label))
         end
     end
-    print(('  Versions & changelogs: ^5%s^0'):format(report.url))
+    print(('  ^9versions & changelogs^0  ^5%s^0'):format(report.url))
 end
 
 local function HandleResponse(status, body, folders)

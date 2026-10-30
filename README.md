@@ -1,72 +1,41 @@
 <div align="center">
 
-# 🧩 koja-lib
+<img src=".github/assets/banner.svg" alt="koja-lib: one API for ESX, QBCore and Qbox" width="100%">
 
-**A developer-first FiveM library built to take the boilerplate out of script development.**
+<br>
 
-[![Latest release](https://img.shields.io/github/v/release/Koja-Scripts/koja-lib?style=for-the-badge&color=B8DBF4&labelColor=0d1117&label=release)](https://github.com/Koja-Scripts/koja-lib/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/Koja-Scripts/koja-lib/total?style=for-the-badge&color=B1FEA1&labelColor=0d1117)](https://github.com/Koja-Scripts/koja-lib/releases)
-[![Stars](https://img.shields.io/github/stars/Koja-Scripts/koja-lib?style=for-the-badge&color=FFDA60&labelColor=0d1117)](https://github.com/Koja-Scripts/koja-lib/stargazers)
-[![Views](https://hits.sh/github.com/Koja-Scripts/koja-lib.svg?style=for-the-badge&label=views&color=c792ea&labelColor=0d1117)](https://hits.sh/github.com/Koja-Scripts/koja-lib/)
-
+[![Latest release](https://img.shields.io/github/v/release/Koja-Scripts/koja-lib?style=flat-square&color=4189e5&labelColor=0d1117&label=release)](https://github.com/Koja-Scripts/koja-lib/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/Koja-Scripts/koja-lib/total?style=flat-square&color=3fb873&labelColor=0d1117)](https://github.com/Koja-Scripts/koja-lib/releases)
 [![Release workflow](https://img.shields.io/github/actions/workflow/status/Koja-Scripts/koja-lib/release.yml?style=flat-square&label=build&labelColor=0d1117)](https://github.com/Koja-Scripts/koja-lib/actions/workflows/release.yml)
-[![Last commit](https://img.shields.io/github/last-commit/Koja-Scripts/koja-lib?style=flat-square&labelColor=0d1117)](https://github.com/Koja-Scripts/koja-lib/commits/main)
 ![Lua](https://img.shields.io/badge/Lua-5.4-2C2D72?style=flat-square&logo=lua&logoColor=white&labelColor=0d1117)
-![FiveM](https://img.shields.io/badge/FiveM-cerulean-F40552?style=flat-square&labelColor=0d1117)
+![Frameworks](https://img.shields.io/badge/ESX%20·%20QBCore%20·%20Qbox-supported-3fb873?style=flat-square&labelColor=0d1117)
 
-![ESX](https://img.shields.io/badge/ESX-supported-success?style=flat-square&labelColor=0d1117)
-![QBCore](https://img.shields.io/badge/QBCore-supported-success?style=flat-square&labelColor=0d1117)
-![QBX](https://img.shields.io/badge/QBX_Core-supported-success?style=flat-square&labelColor=0d1117)
+<a href="https://github.com/Koja-Scripts/koja-lib/releases/latest/download/koja-lib.zip"><img src="https://img.shields.io/badge/Download_koja--lib.zip-4189e5?style=for-the-badge&labelColor=0d1117" alt="Download koja-lib.zip" height="38"></a>
 
-<br>
-
-<a href="https://github.com/Koja-Scripts/koja-lib/releases/latest/download/koja-lib.zip"><img src="https://img.shields.io/badge/⬇_Download_koja--lib.zip-B8DBF4?style=for-the-badge&labelColor=0d1117" alt="Download koja-lib.zip" height="40"></a>
-
-<br>
-
-[📖 Documentation](https://docs.kojascripts.eu/) · [💬 Discord](https://discord.gg/kojascripts) · [🐛 Report a bug](https://github.com/Koja-Scripts/koja-lib/issues) · [📦 All releases](https://github.com/Koja-Scripts/koja-lib/releases)
+[Documentation](https://docs.kojascripts.com/koja-lib/getting-started) · [Releases & versions](https://versions.kojascripts.com) · [Discord](https://discord.gg/kojascripts) · [Report a bug](https://github.com/Koja-Scripts/koja-lib/issues)
 
 </div>
 
 ---
 
-koja-lib gives you a single, consistent API across **ESX**, **QBCore** and **QBX Core** — so your scripts work everywhere without framework-specific branches. Inventory systems, money, players, notifications, sounds, UI components — all covered, all unified.
+koja-lib is the shared library behind every Koja Scripts resource. Write a script once and it runs on **ESX**, **QBCore** and **Qbox**, with whatever inventory, target, fuel, key, dispatch or phone resource the server happens to use. Everything is detected on start and can be forced in one config file.
 
-## ✨ What's inside
+## Contents
 
-| | Feature | Description |
-|---|---|---|
-| 🧱 | **Multi-framework** | ESX, QBCore, QBX Core, or your own custom implementation |
-| 🎒 | **Multi-inventory** | ox_inventory, qb-inventory, codem-inventory, jaksam_inventory with full auto-detection |
-| 🔗 | **Unified API** | The same function calls regardless of what the server runs underneath |
-| 🔊 | **Sounds** | NUI-based audio player with distance falloff, supports files from any resource |
-| 🖥️ | **UI components** | Progress bar, Text UI, notifications, DUI dynamic textures |
-| 📍 | **Points system** | Coordinate-based trigger zones with enter/exit/nearby callbacks |
-| ⌨️ | **Keybinds** | Rebindable keys via the GTA V settings menu |
-| 🔁 | **Callbacks** | Clean client ↔ server callback system (incl. awaitable) |
-| 🗄️ | **Storage** | Reactive client-side key-value store with server-push updates |
-| 📨 | **Webhooks** | Built-in Discord logging |
+- [Installation](#installation)
+- [What you get](#what-you-get)
+- [Supported resources](#supported-resources)
+- [Startup console](#startup-console)
+- [Dev tool](#dev-tool)
+- [Quick look](#quick-look)
+- [API overview](#api-overview)
+- [For script authors: version checks](#for-script-authors-version-checks)
 
-## 🔌 Auto-detected integrations
+## Installation
 
-Everything is set to `'auto'` by default in `editable/shared/config.lua` — koja-lib picks up whatever your server runs.
-
-| Category | Supported |
-|---|---|
-| Framework | `es_extended` · `qb-core` · `qbx_core` · custom |
-| Inventory | `ox_inventory` · `qb-inventory` · `codem-inventory` · `jaksam_inventory` · custom |
-| Target | `ox_target` · `qb-target` |
-| Banking / society | `Renewed-Banking` · `okokBanking` · `qb-banking` · `qb-management` · `esx_society` |
-| Vehicle keys | `qbx_vehiclekeys` · `qb-vehiclekeys` · `wasabi_carlock` · `mk_vehiclekeys` |
-| Clothing | `illenium-appearance` · `fivem-appearance` · `qb-clothing` · `esx_skin` |
-| Fuel | `ox_fuel` · `LegacyFuel` · `cdn-fuel` · `ps-fuel` · `lc_fuel` · native |
-| Sound | `xsound` · built-in NUI player |
-
-## 📥 Installation
-
-1. Download **[koja-lib.zip](https://github.com/Koja-Scripts/koja-lib/releases/latest/download/koja-lib.zip)** from the latest release — the UI is already built.
-2. Extract it into your server's `resources` folder (the folder must be named `koja-lib`).
-3. Add it to `server.cfg` after your framework and `oxmysql`:
+1. Download **[koja-lib.zip](https://github.com/Koja-Scripts/koja-lib/releases/latest/download/koja-lib.zip)** from the latest release. The UI is already built.
+2. Extract it into your `resources` folder. The folder must be named `koja-lib`.
+3. Start it after your framework and `oxmysql`:
 
 ```cfg
 ensure oxmysql
@@ -75,14 +44,76 @@ ensure koja-lib
 ```
 
 > [!WARNING]
-> Don't use *Code → Download ZIP* / *Source code (zip)* — that's the raw source without the built UI (`web/build`).
+> Don't use *Code → Download ZIP* or *Source code (zip)*. That is the raw source without the built UI (`web/build`).
 
-## ⚡ Quick look
+## What you get
+
+| | |
+|---|---|
+| **One API, three frameworks** | ESX, QBCore and Qbox behind the same function names, plus a custom bridge for anything else. |
+| **Integrations that find themselves** | Inventory, target, fuel, vehicle keys, banking, clothing, notifications, dispatch and phones are picked up on start. |
+| **UI kit** | Progress bar, text UI, notifications, DUI textures and a 3D sound player, all from Lua. |
+| **Gameplay helpers** | Points with enter and exit callbacks, rebindable keybinds, awaitable callbacks, stashes, usable items, cooldowns and webhooks. |
+| **Dev tool** | `/kojadev`: coordinates in every format, an entity inspector, noclip, vehicle and world helpers. |
+| **Version checks** | One report for every Koja resource on the server and a private page with changelogs. |
+
+## Supported resources
+
+Every category is set to `'auto'` in `editable/shared/config.lua`. The detection order lives in `editable/shared/integrations.lua`, so you can reorder it or add your own fork.
+
+| Category | Resources |
+|---|---|
+| Framework | `es_extended` · `qb-core` · `qbx_core` · custom |
+| Inventory | `ox_inventory` · `qb-inventory` and its forks · `codem-inventory` · `jaksam_inventory` · custom |
+| Target | `ox_target` · `qb-target` · `qtarget` · `koja-interactions` |
+| Fuel | `ox_fuel` · `Renewed-Fuel` · `LegacyFuel` · `cdn-fuel` · `ps-fuel` · `lc_fuel` · `qs-fuelstations` · `okokGasStation` · `lj-fuel` · `ti_fuel` · native |
+| Vehicle keys | `qbx_vehiclekeys` · `qb-vehiclekeys` · `wasabi_carlock` · `mk_vehiclekeys` · `MrNewbVehicleKeys` · `qs-vehiclekeys` · `Renewed-Vehiclekeys` · `cd_garage` · `okokGarage` |
+| Dispatch | `koja-mdt` · `koja-dispatch` · `ps-dispatch` · `cd_dispatch` · `core_dispatch` · `rcore_dispatch` · `qs-dispatch` |
+| Phone | `lb-phone` · `qs-smartphone` · `qs-smartphone-pro` · `gksphone` · `qb-phone` |
+| Notifications | framework · `ox_lib` · `okokNotify` · `mythic_notify` · `pNotify` · built-in |
+| Banking / society | `Renewed-Banking` · `okokBanking` · `qb-banking` · `qb-management` · `esx_society` |
+| Clothing | `illenium-appearance` · `fivem-appearance` · `qb-clothing` · `skinchanger` |
+| Sound | `xsound` · built-in NUI player |
+
+Every call into another resource is wrapped in `pcall`, so a broken or outdated integration never takes koja-lib down with it.
+
+## Startup console
+
+koja-lib prints one compact block when it starts. It shows what it found and, a few seconds later, whether your Koja Scripts are up to date:
+
+```text
+────────────────────────────────────────────────────────────────
+  KOJA LIB  v1.5.0   ESX 1.12.4   ·   9 Koja resources
+  inventory ox_inventory          target    ox_target             notify    esx
+  fuel      LegacyFuel            keys      qb-vehiclekeys        banking   esx_society
+  clothing  illenium-appearance   dispatch  koja-mdt              phone     lb-phone
+────────────────────────────────────────────────────────────────
+  KOJA SCRIPTS  9 resources checked
+  • everything is up to date
+  versions & changelogs  https://versions.kojascripts.com/s/k4m9x2p7q3vd
+```
+
+The link opens a private page for your server with installed and latest versions and the changelog for each script. Turn it off with `Config.VersionCheck.enabled = false`.
+
+## Dev tool
+
+<img src=".github/assets/devtool.png" alt="koja-lib dev tool" width="300" align="right">
+
+Type `/kojadev` in game. Admins only, following the `Config.Admin` rules.
+
+- **Position:** copy the current spot as `vector3`, `vector4`, `vec3`, a Lua table or JSON. Teleport to the waypoint or to typed coordinates, noclip, and coordinates on screen.
+- **Entity:** aim at a ped, vehicle or object and press <kbd>E</kbd> to read its model, hash, coordinates, rotation and net id.
+- **Vehicle:** spawn by model with fuel and keys, then repair, refuel, flip, give keys or delete.
+- **World:** set or freeze the time and change the weather for yourself only, or clear the area.
+
+Settings live in `Config.DevTool`: command name, an optional key mapping, and extra ACE or groups.
+
+<br clear="right">
+
+## Quick look
 
 ```lua
--- Works on ESX, QBCore, and QBX Core — no changes needed
-local job   = KOJA.Server.GetPlayerJob(source)
-local count = KOJA.Server.getInventoryItemCount(source, 'lockpick')
+local job = KOJA.Server.GetPlayerJob(source)
 
 if job.name == 'police' and KOJA.Server.HasItem(source, 'handcuffs') then
     KOJA.Server.addMoney(source, 500, 'cash')
@@ -90,59 +121,88 @@ if job.name == 'police' and KOJA.Server.HasItem(source, 'handcuffs') then
 end
 ```
 
+Send a dispatch alert to whatever dispatch the server runs:
+
 ```lua
--- Client side
-KOJA.Client.points.new({
-    coords   = vector3(100.0, 200.0, 30.0),
-    distance = 2.0,
-    onEnter  = function() showTextUI({ key = 'E', label = 'Interact' }) end,
-    onExit   = function() hideTextUI() end,
+KOJA.Server.SendDispatch({
+    source = source,
+    code = '10-90',
+    title = 'Store robbery',
+    message = 'Silent alarm at the 24/7 on Innocence Blvd',
+    jobs = { 'police' },
+    priority = 1,
+    blip = { sprite = 52, color = 1 },
 })
 ```
 
-## 🧰 Bridge functions (v2)
+Mail a player on their phone, or fall back to a notification:
 
-Everything is available through `KOJA = exports['koja-lib']:getSharedObject()` (or `@koja-lib/init.lua`). All integrations are optional and wrapped in `pcall`; defaults live in `editable/shared/config.lua` (`Config.Inventory`, `Config.Banking`, `Config.Target`, ...). Inventory detection is shared with the inventory bridge (`Config.Inventory`, `editable/shared/inventory.lua`).
+```lua
+KOJA.Server.SendPhoneMail(source, { sender = 'Mechanic', subject = 'Your car is ready', message = 'Pick it up at the Burton shop.' })
+```
 
-**Server**
-- Jobs: `GetJobInfo`, `SetJob`, `SetOfflineJob`, `SetJobDuty`, `GetJobs`, `GetSourceByIdentifier`, `GetGender`, `IsAdmin(src, groups, ace, identifiers)`
-- Items: `addInventoryItem(src, name, count, metadata)`, `removeInventoryItem(src, name, count, metadata, slot)`, `CanCarryItem`, `GetItemsByName`, `GetItemList`, `GetItemLabel`, `GetItemImage`, `RegisterUsableItem(name, fn(src, item, metadata, slot))`
-- Stash: `RegisterStash` (optional `opts.clientOpen = true` to allow `KOJA.Client.OpenStash`; default server-side opening only), `OpenStash`, `AddStashItem`, `RemoveStashItem`, `GetStashItems`, `GetStashItemCount`
-- Other: `SyncSocietyBalance(account, balance)`, `GiveVehicleKeys(src, plate, netId)`
-- `LogMessage(data, hook)` accepts a raw https url as `hook`, `data.fields` and `data.color`
+## API overview
 
-**Client**
-- `AwaitServerCallback(key, payload, timeoutMs)` (request-id based, nil on timeout)
-- `Progress(data)` (blocking, returns bool), `ShowTextUI(data)`, `HideTextUI()`
-- `RequestModel`, `RequestAnimDict`, `GetVehicleProperties`, `SetVehicleProperties`, `GetClosestVehicle`, `SetFuel`, `GiveVehicleKeys`, `GetGender`
-- `Target.Name`, `Target.GetName()`, `Target.AddSphere/AddBox/Remove/AddLocalEntity/RemoveLocalEntity`
-- `Clothing.GetAppearance/ApplyOutfit/RestoreCivilian`
-- `OpenStash(id)`
-- `Sound.Available/PlayUrlPos/SetVolume/SetDistance/SetPosition/SetTimeStamp/Stop/Exists`
-
-**Usable items with ox_inventory:** the item needs to be usable (`consume = 0` in the item definition) so ox fires `ox_inventory:usedItem`, or use `server = { export = 'koja-lib.useItem' }`.
-
-**Custom framework / inventory:** the v2 helpers have optional override hooks in `editable/custom/framework_server.lua` (`GetJobInfo`, `SetJob`, `SetOfflineJob`, `SetJobDuty`, `GetJobs`, `GetSourceByIdentifier`, `GetGender`, `IsGroupAdmin`, `RegisterUsableItem`) and `editable/custom/inventory_server.lua` (`CanCarryItem`, `GetItemsByName`, `GetItemList`, optional stash hooks `RegisterStash` / `OpenStash` / `AddStashItem` / `RemoveStashItem` / `GetStashItems`).
-
-**Sound:** `KOJA.Client.Sound.*` uses xsound when it is running and falls back to the built-in NUI sound player otherwise.
+Get the object with `KOJA = exports['koja-lib']:getSharedObject()` or load `@koja-lib/init.lua`.
 
 <details>
-<summary><b>🚀 Publishing a release (maintainers)</b></summary>
+<summary><b>Server</b></summary>
 
-1. Bump `version` in `fxmanifest.lua` and push to `main`.
-2. Either push a matching tag (`git tag 1.2.1 && git push origin 1.2.1`) or run the **Release** workflow manually from the Actions tab — it builds the NUI, packages `koja-lib.zip` and publishes the release.
+- **Players and jobs:** `GetPlayerJob`, `GetJobInfo`, `SetJob`, `SetOfflineJob`, `SetJobDuty`, `GetJobs`, `GetPlayersByJob`, `NotifyJob`, `GetSourceByIdentifier`, `GetGender`, `IsAdmin(src, groups, ace, identifiers)`
+- **Money:** `addMoney`, `removeMoney`, `ChargePlayer(src, amount, accounts, reason)`, `SyncSocietyBalance`
+- **Items:** `addInventoryItem`, `removeInventoryItem`, `getInventoryItemCount`, `HasItem`, `CanCarryItem`, `GetItemsByName`, `GetItemList`, `GetItemLabel`, `GetItemImage`, `RegisterUsableItem`
+- **Stashes:** `RegisterStash`, `OpenStash`, `AddStashItem`, `RemoveStashItem`, `GetStashItems`, `GetStashItemCount`
+- **Vehicles:** `GiveVehicleKeys(src, plate, netId)`, `RemoveVehicleKeys(src, plate, netId)`
+- **Dispatch:** `SendDispatch(data)`, `GetDispatchResource()`
+- **Phone:** `SendPhoneNotification(src, data)`, `SendPhoneMail(src, data)`, `GetPhoneResource()`
+- **Utilities:** `SendNotify`, `Cooldown`, `ResetCooldown`, `LogMessage(data, hook)`
+- **Versions:** `GetVersionReport()`, `GetVersionStatus(resource)` and the `koja-lib:versions:ready` event
 
 </details>
 
-## 💬 Support
+<details>
+<summary><b>Client</b></summary>
 
-Head over to the **[full documentation](https://docs.kojascripts.eu/)** for configuration and the complete API reference.
-Need help or want to follow updates? Join the **[Discord](https://discord.gg/kojascripts)** — support tickets are open there.
+- **Callbacks:** `AwaitServerCallback(key, payload, timeoutMs)`
+- **UI:** `Progress(data)`, `CancelProgress()`, `IsProgressActive()`, `ShowTextUI(data)`, `HideTextUI()`, `SendNotify(data)`
+- **Vehicles:** `GetVehicleProperties`, `SetVehicleProperties`, `GetClosestVehicle`, `GetFuel`, `SetFuel`, `GetFuelResource`, `GiveVehicleKeys`, `RemoveVehicleKeys`
+- **Target:** `Target.GetName()`, `Target.AddSphere`, `Target.AddBox`, `Target.Remove`, `Target.AddLocalEntity`, `Target.RemoveLocalEntity`
+- **Clothing:** `Clothing.GetAppearance`, `Clothing.ApplyOutfit`, `Clothing.RestoreCivilian`
+- **Dispatch:** `SendDispatch(data)`. It goes through the server, with a cooldown, a distance check and the jobs from `Config.Dispatch`.
+- **Other:** `OpenStash(id)`, `RequestModel`, `RequestAnimDict`, `GetGender`, `Sound.*`
 
-If koja-lib saves you time, consider leaving a ⭐ — it really helps!
+</details>
+
+<details>
+<summary><b>Custom framework or inventory</b></summary>
+
+Override hooks live in `editable/custom/framework_server.lua` (`GetJobInfo`, `SetJob`, `SetOfflineJob`, `SetJobDuty`, `GetJobs`, `GetSourceByIdentifier`, `GetGender`, `IsGroupAdmin`, `RegisterUsableItem`) and `editable/custom/inventory_server.lua` (`CanCarryItem`, `GetItemsByName`, `GetItemList` and the stash hooks).
+
+With ox_inventory, a usable item needs `consume = 0` so ox fires `ox_inventory:usedItem`, or `server = { export = 'koja-lib.useItem' }`.
+
+</details>
+
+Full reference: **[docs.kojascripts.com](https://docs.kojascripts.com/koja-lib/getting-started)**.
+
+## For script authors: version checks
+
+Any started resource whose fxmanifest `author` contains "Koja" is included in the server's version report. Two optional fields help with forks and renamed folders:
+
+```lua
+koja_resource 'koja-hud-free'   -- the repository name, used even if the folder is renamed
+koja_version '1.0.9'            -- your own version when `version` must stay at the upstream number
+```
+
+<details>
+<summary><b>Publishing a release (maintainers)</b></summary>
+
+1. Bump `version` in `fxmanifest.lua`, add a `## [x.y.z]` section to `CHANGELOG.md` and push to `main`.
+2. Push a matching tag (`git tag -a 1.5.0 -m "koja-lib 1.5.0" && git push origin 1.5.0`), or run the **Release** workflow from the Actions tab. It builds the UI, packages `koja-lib.zip` and publishes the release with the changelog section.
+
+</details>
 
 ---
 
 <div align="center">
-<sub>Made with ❤️ by <b>Koja Scripts</b></sub>
+<sub><b>Koja Scripts</b> · <a href="https://kojascripts.com">kojascripts.com</a> · if koja-lib saves you time, a star helps</sub>
 </div>

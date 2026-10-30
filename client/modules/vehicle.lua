@@ -49,7 +49,7 @@ KOJA.Client.GetFuel = function(vehicle)
 
     local name = KOJA.Client.GetFuelResource()
     local level
-    if name == 'ox_fuel' then
+    if (name == 'ox_fuel' or name == 'Renewed-Fuel') then
         level = Entity(vehicle).state.fuel
     elseif name ~= 'native' then
         local ok, result = pcall(function() return exports[name]:GetFuel(vehicle) end)

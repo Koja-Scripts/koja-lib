@@ -13,7 +13,8 @@ Config.VersionCheck = {
 }
 
 -- Notifications systems
--- "esx", "qb", "ox" (ox = ox_lib notify), "lib" (built-in koja-lib notify)
+-- "esx", "qb", "ox" (ox = ox_lib notify), "lib" (built-in koja-lib notify),
+-- "okok" (okokNotify), "mythic" (mythic_notify), "pnotify" (pNotify)
 Config.Notify = "esx"
 
 -- Framework used by your server.
@@ -65,15 +66,36 @@ Config.UI = {
     }
 }
 
--- Integrations used by the bridge style functions (items, stash, target, clothing, keys, fuel, sound ...).
+-- Integrations used by the bridge style functions (items, stash, target, clothing, keys, fuel, dispatch, phone ...).
 -- Every value can stay on 'auto'. Set a resource name (or 'none') to force a specific one.
 -- (The inventory is selected with Config.Inventory above; stash/items follow it.)
+-- The auto-detection order of every category lives in editable/shared/integrations.lua.
 Config.Banking = 'auto'     -- 'auto' | 'Renewed-Banking' | 'okokBanking' | 'qb-banking' | 'qb-management' | 'esx_society' | 'none'
-Config.VehicleKeys = 'auto' -- 'auto' | 'qbx_vehiclekeys' | 'qb-vehiclekeys' | 'wasabi_carlock' | 'mk_vehiclekeys' | 'none'
-Config.Target = 'auto'      -- 'auto' | 'ox_target' | 'qb-target' | 'none'
+Config.VehicleKeys = 'auto' -- 'auto' | 'qbx_vehiclekeys' | 'qb-vehiclekeys' | 'wasabi_carlock' | 'mk_vehiclekeys' | 'MrNewbVehicleKeys' | 'qs-vehiclekeys' | 'Renewed-Vehiclekeys' | 'cd_garage' | 'okokGarage' | 'none'
+Config.Target = 'auto'      -- 'auto' | 'ox_target' | 'qb-target' | 'qtarget' | 'none' (koja-interactions provides ox_target)
 Config.Clothing = 'auto'    -- 'auto' | 'illenium-appearance' | 'fivem-appearance' | 'qb-clothing' | 'esx_skin' | 'none'
-Config.Fuel = 'auto'        -- 'auto' | 'ox_fuel' | 'LegacyFuel' | 'cdn-fuel' | 'ps-fuel' | 'lc_fuel' | 'native'
+Config.Fuel = 'auto'        -- 'auto' | 'ox_fuel' | 'Renewed-Fuel' | 'LegacyFuel' | 'cdn-fuel' | 'ps-fuel' | 'lc_fuel' | 'qs-fuelstations' | 'okokGasStation' | 'lj-fuel' | 'ti_fuel' | 'native'
+Config.Phone = 'auto'       -- 'auto' | 'lb-phone' | 'qs-smartphone' | 'qs-smartphone-pro' | 'gksphone' | 'qb-phone' | 'none'
+
+-- KOJA.Server.SendDispatch / KOJA.Client.SendDispatch
+Config.Dispatch = {
+    system = 'auto',              -- 'auto' | 'koja-mdt' | 'koja-dispatch' | 'ps-dispatch' | 'cd_dispatch' | 'core_dispatch' | 'rcore_dispatch' | 'qs-dispatch' | 'none'
+    defaultJobs = { 'police' },   -- jobs that get an alert when the caller does not name any
+    allowClient = true,           -- let client scripts send alerts through KOJA.Client.SendDispatch
+    clientCooldown = 10,          -- seconds between client alerts per player
+    clientMaxDistance = 150.0,    -- client coords further than this from the player are replaced with the player position
+    clientJobs = { 'police', 'sheriff', 'ambulance' }, -- jobs a client alert may target (nil = any)
+}
 Config.Sound = 'auto'       -- 'auto' | 'xsound' | 'none'
+
+-- In-game dev tool: /kojadev (position, entity inspector, vehicle and world helpers). Admins only (Config.Admin rules).
+Config.DevTool = {
+    enabled = true,
+    command = 'kojadev',
+    key = '',          -- optional key mapping, e.g. 'F10'
+    ace = nil,         -- extra ACE that grants access, nil uses Config.Admin
+    groups = nil,      -- extra framework groups, nil uses Config.Admin
+}
 
 -- KOJA.Server.IsAdmin defaults
 Config.Admin = {

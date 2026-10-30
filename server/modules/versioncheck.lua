@@ -44,7 +44,7 @@ end
 
 local function IsKojaResource(name)
     if GetResourceState(name) ~= 'started' then return false end
-    return HasKojaAuthor(name)
+    return HasKojaAuthor(name) or GetResourceMetadata(name, 'koja_resource', 0) ~= nil
 end
 
 local function IsValidName(value)
@@ -60,6 +60,10 @@ local function CanonicalName(folder)
     return folder
 end
 
+local function ResourceVersion(folder)
+    return NormalizeVersion(GetResourceMetadata(folder, 'koja_version', 0)) or NormalizeVersion(GetResourceMetadata(folder, 'version', 0))
+end
+
 local function CollectResources()
     local found = {}
     for i = 0, GetNumResources() - 1 do
@@ -67,7 +71,7 @@ local function CollectResources()
         if folder and IsKojaResource(folder) then
             local name = CanonicalName(folder)
             if IsValidName(name) then
-                found[#found + 1] = { folder = folder, name = name, version = NormalizeVersion(GetResourceMetadata(folder, 'version', 0)) }
+                found[#found + 1] = { folder = folder, name = name, version = ResourceVersion(folder) }
             end
         end
     end

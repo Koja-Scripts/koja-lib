@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.1] - 2026-10-30
+
+### Changed
+- **Version checker:** resources that declare `koja_version` are reported with that version instead of `version`, so forks that keep the upstream `version` (e.g. koja-inventory on ox_inventory 2.48.0) map to their Koja release.
+- Resources that declare `koja_resource` are reported even when their `author` does not contain "Koja" (e.g. koja-oxlib, which keeps the ox_lib author).
+
 ## [1.4.0] - 2026-10-30
 
 ### Added

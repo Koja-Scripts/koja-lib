@@ -2,6 +2,8 @@
 
 ## [1.5.0] - 2026-10-30
 
+<img src="https://raw.githubusercontent.com/Koja-Scripts/koja-lib/main/.github/assets/devtool.png" alt="Dev tool" width="24%"> <img src="https://raw.githubusercontent.com/Koja-Scripts/koja-lib/main/.github/assets/devtool-vehicle.png" alt="Dev tool" width="24%"> <img src="https://raw.githubusercontent.com/Koja-Scripts/koja-lib/main/.github/assets/devtool-entity.png" alt="Dev tool" width="24%"> <img src="https://raw.githubusercontent.com/Koja-Scripts/koja-lib/main/.github/assets/devtool-world.png" alt="Dev tool" width="24%">
+
 ### Added
 - **Dev tool:** `/kojadev` for admins, configured in `Config.DevTool`.
   - Copy coordinates as vector3, vector4, vec3, a Lua table or JSON.

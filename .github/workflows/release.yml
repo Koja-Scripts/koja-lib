@@ -108,7 +108,7 @@ jobs:
             echo "2. Extract it into your server's \`resources\` folder (the folder must be named \`${RESOURCE_NAME}\`)."
             echo "3. Add \`ensure ${RESOURCE_NAME}\` to \`server.cfg\` (after your framework and \`oxmysql\`)."
             echo
-            echo "Full docs: https://docs.kojascripts.eu/"
+            echo "Full docs: https://docs.kojascripts.com/"
             echo
             # Section of CHANGELOG.md for this version, if there is one
             if [ -f CHANGELOG.md ]; then

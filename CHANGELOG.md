@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.0] - 2026-10-30
+
+### Added
+- **Version checker:** koja-lib now reports every started Koja Scripts resource (fxmanifest `author` containing "Koja") to `versions.kojascripts.com` in one request and prints a single link with versions and changelogs. Only outdated or critical resources are listed in the console.
+- `Config.VersionCheck = { enabled, url }` in `editable/shared/config.lua`.
+- Server exports `GetVersionReport()` and `GetVersionStatus(resourceName)`, plus `KOJA.Server.GetVersionReport` / `KOJA.Server.GetVersionStatus`.
+- Server event `koja-lib:versions:ready` (report) after each successful report.
+
+### Changed
+- The old GitHub-only check for koja-lib is replaced. Reports run ~10 s after start, again ~15 s after another Koja resource starts, and every 6 h.
+
 ## [1.3.0] - 2026-10-21
 
 ### Security

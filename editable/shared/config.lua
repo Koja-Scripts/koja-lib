@@ -5,6 +5,13 @@ Config.Locale = 'pl'
 -- Boolean to receive system logs.
 Config.Debug = false -- Console logs
 
+-- Koja Scripts version checker: reports the versions of your Koja resources
+-- and prints one link with versions and changelogs.
+Config.VersionCheck = {
+    enabled = true,
+    url = 'https://versions.kojascripts.com',
+}
+
 -- Notifications systems
 -- "esx", "qb", "ox" (ox = ox_lib notify), "lib" (built-in koja-lib notify)
 Config.Notify = "esx"

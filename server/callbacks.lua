@@ -17,7 +17,9 @@ end)
 ---@param key string # Callback identifier
 ---@param func function # Callback function
 KOJA.Server.RegisterServerCallback = function(key, func)
-    KOJA.Callbacks[key] = func
+    KOJA.Callbacks[key] = function(...)
+        return func(...)
+    end
 end
 
 ---@param key string # Callback identifier

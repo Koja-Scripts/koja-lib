@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.5.2] - 2026-11-02
+
+[/] Fixed false callback_missing errors for callbacks registered by other FiveM resources. Cfx function references are callable tables; registered handlers are now wrapped in local Lua functions before dispatch.
+
 ## [1.5.1] - 2026-11-02
 
 [/] Qbox: native GetPlayer and GetQBPlayers no longer depend on the optional qb-core compatibility bridge.

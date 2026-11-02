@@ -22,7 +22,7 @@ local function safeCall(fn, ...)
     if ok then
         return a, b
     end
-    return nil
+    return nil, (Misc.Utils.DescribeError or tostring)(a)
 end
 
 -- Normalises any inventory's "items" structure into { [itemName] = count }.
@@ -66,9 +66,13 @@ Adapters['ox_inventory'] = {
         return tonumber(count) or 0
     end,
     GetItems = function(src)
-        return normaliseItems(safeCall(function()
+        local items, err = safeCall(function()
             return exports.ox_inventory:GetInventoryItems(src)
-        end))
+        end)
+        if type(items) ~= 'table' then
+            return nil, err or 'ox_inventory has no loaded inventory for this player yet.'
+        end
+        return normaliseItems(items)
     end,
 }
 
@@ -170,6 +174,7 @@ Adapters['custom'] = {
 ----------------------------------------------------------------------
 
 local function adapter()
+    KOJA.Inventory = Misc.Utils.GetInventory()
     return Adapters[KOJA.Inventory]
 end
 
@@ -242,9 +247,13 @@ end
 KOJA.Server.GetPlayerInventory = function(source)
     local a = adapter()
     if a and a.GetItems then
-        local items = a.GetItems(source)
+        local items, err = a.GetItems(source)
         if items then
             return items
+        end
+        if err then
+            print(('[koja-lib][Inventory][server] inventory_unavailable player=%s adapter=%s: %s'):format(tostring(source), tostring(KOJA.Inventory), tostring(err)))
+            return {}, { code = 'inventory_unavailable', adapter = KOJA.Inventory, message = tostring(err) }
         end
     end
 

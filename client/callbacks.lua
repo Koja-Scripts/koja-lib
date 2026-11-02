@@ -8,7 +8,14 @@ KOJA.Client.TriggerServerCallback = function(key, payload, func)
     -- Goes through the request-id based dispatcher (await.lua), so several calls
     -- with the same key can be in flight at once without overwriting each other.
     CreateThread(function()
-        func(KOJA.Client.AwaitServerCallback(key, payload, 60000))
+        local ok, err = xpcall(function()
+            func(KOJA.Client.AwaitServerCallback(key, payload, 60000))
+        end, function(err)
+            return debug.traceback((Misc.Utils.DescribeError or tostring)(err), 2)
+        end)
+        if not ok then
+            print(('[koja-lib] Client callback %s: %s'):format(tostring(key), err))
+        end
     end)
 end
 

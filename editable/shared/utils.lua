@@ -57,3 +57,12 @@ Misc.Utils.customNotify = function(data)
         -- Client side
     end
 end
+
+Misc.Utils.DescribeError = function(value)
+    if type(value) == 'table' then
+        local message = value.message or value.error or value.reason or value.code
+        if type(message) == 'string' then return message:sub(1, 2048) end
+        return 'Non-string error: table without a textual message, error, reason or code.'
+    end
+    return tostring(value):sub(1, 2048)
+end

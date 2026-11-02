@@ -1,4 +1,18 @@
 KOJA.Callbacks = {}
+KOJA.Server.CallbackFailureLoggedAt = {}
+
+KOJA.Server.LogCallbackFailure = function(source, message)
+    local now = GetGameTimer()
+    local last = KOJA.Server.CallbackFailureLoggedAt[source]
+    if not last or now - last >= 5000 then
+        KOJA.Server.CallbackFailureLoggedAt[source] = now
+        print(message)
+    end
+end
+
+AddEventHandler('playerDropped', function()
+    KOJA.Server.CallbackFailureLoggedAt[source] = nil
+end)
 
 ---@param key string # Callback identifier
 ---@param func function # Callback function
@@ -24,24 +38,39 @@ end)
 ---@param payload any # Data payload
 RegisterNetEvent("koja:Server:HandleAwaitCallback", function(reqId, key, payload)
     local src = source
-    if type(reqId) ~= 'string' or #reqId > 64 or type(key) ~= 'string' then return end
+    if type(reqId) ~= 'string' or #reqId > 64 or reqId:find('%c')
+        or type(key) ~= 'string' or #key > 256 or key:find('%c') then return end
 
     local handler = KOJA.Callbacks[key]
     if type(handler) ~= 'function' then
-        TriggerClientEvent("koja:Client:HandleAwaitCallback", src, reqId, nil)
+        KOJA.Server.LogCallbackFailure(src, ('[koja-lib][Callback][server] callback_missing key=%s request=%s player=%s lib=%s. Check that the callback resource started without errors.'):format(
+            key, reqId, src, GetResourceMetadata('koja-lib', 'version', 0) or 'unknown'))
+        TriggerClientEvent("koja:Client:HandleAwaitCallback", src, reqId, nil, {
+            code = 'callback_missing', callback = key, requestId = reqId,
+            message = 'No server handler is registered. Check resource startup errors and restart koja-lib before its dependent resources.',
+        })
         return
     end
 
     local answered = false
-    local ok = pcall(handler, src, payload, function(result)
+    local ok, err = xpcall(handler, function(err)
+        return debug.traceback((Misc.Utils.DescribeError or tostring)(err), 2)
+    end, src, payload, function(result)
         if answered then return end
         answered = true
         TriggerClientEvent("koja:Client:HandleAwaitCallback", src, reqId, result)
     end)
 
+    if not ok then
+        KOJA.Server.LogCallbackFailure(src, ('[koja-lib][Callback][server] handler_error key=%s request=%s player=%s: %s'):format(key, reqId, src, err))
+    end
+
     if not ok and not answered then
         answered = true
-        TriggerClientEvent("koja:Client:HandleAwaitCallback", src, reqId, nil)
+        TriggerClientEvent("koja:Client:HandleAwaitCallback", src, reqId, nil, {
+            code = 'handler_error', callback = key, requestId = reqId,
+            message = 'The server callback raised an error. See the server console for the callback traceback.',
+        })
     end
 end)
 

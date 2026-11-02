@@ -271,10 +271,20 @@ elseif FRAMEWORK == 'qb' then
     pcall(function() QBCore = exports['qb-core']:GetCoreObject() end)
 
     GetPlayers = function()
+        if GetResourceState('qbx_core') == 'started' then
+            local players = {}
+            for playerId in pairs(exports.qbx_core:GetQBPlayers()) do
+                players[#players + 1] = tonumber(playerId)
+            end
+            return players
+        end
         return QBCore.Functions.GetPlayers()
     end
 
     getPlayer = function(src)
+        if GetResourceState('qbx_core') == 'started' then
+            return exports.qbx_core:GetPlayer(src)
+        end
         return QBCore.Functions.GetPlayer(src)
     end
 

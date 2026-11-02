@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1] - 2026-11-02
+
+[/] Qbox: native GetPlayer and GetQBPlayers no longer depend on the optional qb-core compatibility bridge.
+[/] Inventory selection is refreshed when used, including inventories started after the library. Failed ox_inventory reads report an error instead of looking like an empty inventory.
+[/] Removed the unconditional ESX import from the manifest.
+[+] Callback diagnostics distinguish missing handlers, server exceptions and timeouts, with callback name and request ID. Existing callback results remain compatible.
+
 ## [1.5.0] - 2026-10-30
 
 <img src="https://raw.githubusercontent.com/Koja-Scripts/koja-lib/main/.github/assets/devtool.png" alt="Dev tool" width="24%"> <img src="https://raw.githubusercontent.com/Koja-Scripts/koja-lib/main/.github/assets/devtool-vehicle.png" alt="Dev tool" width="24%"> <img src="https://raw.githubusercontent.com/Koja-Scripts/koja-lib/main/.github/assets/devtool-entity.png" alt="Dev tool" width="24%"> <img src="https://raw.githubusercontent.com/Koja-Scripts/koja-lib/main/.github/assets/devtool-world.png" alt="Dev tool" width="24%">

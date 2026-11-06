@@ -7,9 +7,12 @@ Config.Debug = false -- Console logs
 
 -- Koja Scripts version checker: reports the versions of your Koja resources
 -- and prints one link with versions and changelogs.
+-- sharePlayerCount also sends the most players online in the last 24 hours
+-- (a single number, nothing about who they are). Set it to false to opt out.
 Config.VersionCheck = {
     enabled = true,
     url = 'https://versions.kojascripts.com',
+    sharePlayerCount = true,
 }
 
 -- Notifications systems

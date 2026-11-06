@@ -163,6 +163,66 @@ local function HandleResponse(status, body, folders)
     TriggerEvent('koja-lib:versions:ready', versionReport)
 end
 
+-- 24-hour player peak, sent with each report so kojascripts.com can show how
+-- many players are on Koja servers. Only the count is sent: no names, no
+-- identifiers. Peaks are kept per hour in KVP so a restart at 6am does not
+-- report the empty server it starts as. Turn off with
+-- Config.VersionCheck.sharePlayerCount = false.
+local peakKvp = 'koja_versions_peaks'
+local peakWindowHours = 24
+local maxReportedPlayers = 2048
+local hourlyPeaks = nil
+
+local function CurrentHour()
+    return math.floor(os.time() / 3600)
+end
+
+local function LoadPeaks()
+    if hourlyPeaks then return hourlyPeaks end
+    hourlyPeaks = {}
+    local raw = GetResourceKvpString(peakKvp)
+    local ok, stored = pcall(json.decode, raw or '')
+    if ok and type(stored) == 'table' then
+        for hour, count in pairs(stored) do
+            local h, n = tonumber(hour), tonumber(count)
+            if h and n then hourlyPeaks[h] = math.floor(n) end
+        end
+    end
+    return hourlyPeaks
+end
+
+local function SamplePlayers()
+    local peaks = LoadPeaks()
+    local hour = CurrentHour()
+    local online = #GetPlayers()
+    local changed = false
+    if online > (peaks[hour] or -1) then
+        peaks[hour] = online
+        changed = true
+    end
+    for h in pairs(peaks) do
+        if h <= hour - peakWindowHours then
+            peaks[h] = nil
+            changed = true
+        end
+    end
+    if changed then
+        local out = {}
+        for h, n in pairs(peaks) do out[tostring(h)] = n end
+        SetResourceKvp(peakKvp, json.encode(out))
+    end
+end
+
+local function PlayerPeak()
+    if settings.sharePlayerCount == false then return nil end
+    SamplePlayers()
+    local peak = 0
+    for _, n in pairs(LoadPeaks()) do
+        if n > peak then peak = n end
+    end
+    return math.min(peak, maxReportedPlayers)
+end
+
 local ScheduleReport
 
 local function SendReport()
@@ -173,7 +233,7 @@ local function SendReport()
     local resources, folders = CollectResources()
     if #resources == 0 then return end
 
-    local payload = { resources = resources }
+    local payload = { resources = resources, players = PlayerPeak() }
     local storedId = GetResourceKvpString('koja_versions_id')
     local storedSecret = GetResourceKvpString('koja_versions_secret')
     if IsValidId(storedId) and IsValidSecret(storedSecret) then
@@ -235,3 +295,13 @@ CreateThread(function()
         ScheduleReport(0)
     end
 end)
+
+if settings.sharePlayerCount ~= false then
+    -- One cheap sample a minute is enough for an hourly peak.
+    CreateThread(function()
+        while true do
+            SamplePlayers()
+            Wait(60000)
+        end
+    end)
+end

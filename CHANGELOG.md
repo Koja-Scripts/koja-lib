@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.5.3] - 2026-11-06
+
+[+] The version checker also sends the most players online on the server in the last 24 hours, as one number with nothing about who they are. Peaks are kept per hour and survive restarts. Opt out with `Config.VersionCheck.sharePlayerCount = false`.
+
 ## [1.5.2] - 2026-11-02
 
 [/] Fixed false callback_missing errors for callbacks registered by other FiveM resources. Cfx function references are callable tables; registered handlers are now wrapped in local Lua functions before dispatch.
